@@ -5,7 +5,13 @@ plugins {
     id "jaci.openrio.gradle.GradleRIO" version "2018.01.07"
 }
 
-def TEAM = 5333
+// Local dependencies
+ext.libs = "$projectDir/libs"
+ext.compileLib = "${libs}/compile"
+ext.runtimeLib = "${libs}/runtime"
+
+// GradleRIO variables
+def TEAM = 457
 def ROBOT_CLASS = "frc.team0000.robot.Robot"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -26,10 +32,19 @@ deploy {
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
-    compile wpilib()
-    compile ctre()
-    compile navx()
-    compile openrio.powerup.matchData()
+    if (gradle.startParameter.isOffline()) {
+        compile fileTree(dir: compileLib)
+    } else {
+        compile wpilib()
+        compile ctre()
+        compile navx()
+        compile openrio.powerup.matchData()
+
+        testCompile wpilib()
+        testCompile ctre()
+        testCompile navx()
+        testCompile openrio.powerup.matchData()
+    }
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
@@ -42,4 +57,20 @@ jar {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
+}
+
+task deleteLibs(type: Delete) {
+    delete 'libs/compile'
+    delete 'libs/runtime'
+    delete 'libs/testCompile'
+    delete 'libs/testRuntime'
+}
+
+task copyToLibs(dependsOn: 'deleteLibs') << {
+    ['compile', 'runtime', 'testCompile', 'testRuntime'].each { scope ->
+        copy {
+            from configurations.getByName(scope).files
+            into "${libs}/${scope}"
+        }
+    }
 }
