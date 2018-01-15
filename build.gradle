@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.07"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.15"
 }
 
 // Local dependencies
@@ -38,11 +38,13 @@ dependencies {
         compile wpilib()
         compile ctre()
         compile navx()
+        compile pathfinder()
         compile openrio.powerup.matchData()
 
         testCompile wpilib()
         testCompile ctre()
         testCompile navx()
+        testCompile pathfinder()
         testCompile openrio.powerup.matchData()
     }
 }
