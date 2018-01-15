@@ -12,7 +12,7 @@ ext.runtimeLib = "${libs}/runtime"
 
 // GradleRIO variables
 def TEAM = 457
-def ROBOT_CLASS = "frc.team0000.robot.Robot"
+def ROBOT_CLASS = "org.greasemonkeys457.robot2018.Robot"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
