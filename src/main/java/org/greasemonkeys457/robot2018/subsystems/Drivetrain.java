@@ -1,63 +1,82 @@
 package org.greasemonkeys457.robot2018.subsystems;
 
-import com.ctre.CANTalon;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.Constants;
+import org.greasemonkeys457.robot2018.Robot;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 
 public class Drivetrain extends Subsystem {
 
     // Actuators
-    SpeedController rfMotor;
-    SpeedController rbMotor;
-    SpeedController lfMotor;
-    SpeedController lbMotor;
+    TalonSRX rightMaster;
+    TalonSRX rightFollower;
+    TalonSRX leftMaster;
+    TalonSRX leftFollower;
 
     DoubleSolenoid shifter;
 
     // Sensors
-    Encoder rightEncoder;
-    Encoder leftEncoder;
+    public Encoder rightEncoder;
+    public Encoder leftEncoder;
 
     // State variables
     public boolean areShiftersForward;
 
     // Constants
     double scale = Constants.scale;
+    double wheelDiameter = Constants.wheelDiameter;
+    double encoderPulsesPerRev = Constants.pulsesPerRev;
 
     public Drivetrain () {
 
-        rfMotor = new WPI_TalonSRX(RobotMap.rfMotor);
-        rbMotor = new WPI_TalonSRX(RobotMap.rbMotor);
-        lfMotor = new WPI_TalonSRX(RobotMap.lfMotor);
-        lbMotor = new WPI_TalonSRX(RobotMap.lbMotor);
+        rightMaster   = new TalonSRX(RobotMap.rfMotor);
+        rightFollower = new TalonSRX(RobotMap.rbMotor);
+        leftMaster    = new TalonSRX(RobotMap.lfMotor);
+        leftFollower  = new TalonSRX(RobotMap.lbMotor);
 
         shifter = new DoubleSolenoid(RobotMap.shifterForward, RobotMap.shifterReverse);
 
-        // TODO: Encoders?
+        // Encoders
+        // Note: This code only works when the encoders are plugged into the DIO on the roboRIO.
+        //       If we connect the encoders through the talons, this configuration will be different.
+        rightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB);
+        leftEncoder  = new Encoder(RobotMap.leftEncoderA,  RobotMap.leftEncoderB);
+
+        // Encoder configuration
+        rightEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+        leftEncoder .setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+
+        leftEncoder.setReverseDirection(true);
 
         // TODO: NavX
 
-        // TODO: Talon config
+        // ----- Talon configuration begins -----
+
+        // Set follower talons
+        rightFollower.follow(rightMaster);
+        leftFollower .follow(leftMaster);
+
+        // Invert the right side
+        rightMaster  .setInverted(true);
+        rightFollower.setInverted(true);
+
+        // ------ Talon configuration ends ------
 
     }
 
     public void setRightSpeed (double speed) {
-        rfMotor.set(speed);
-        rbMotor.set(speed);
+        rightMaster.set(ControlMode.PercentOutput, speed);
     }
     public void setLeftSpeed (double speed) {
-        rfMotor.set(speed);
-        rbMotor.set(speed);
+        leftMaster.set(ControlMode.PercentOutput, speed);
     }
 
-    // TODO: Rename methods to shiftToHigh and shiftToLow
-    public void shiftersForward () {
+    public void shiftToLow () {
 
         // Move the shifters
         shifter.set(DoubleSolenoid.Value.kForward);
@@ -66,7 +85,7 @@ public class Drivetrain extends Subsystem {
         areShiftersForward = true;
 
     }
-    public void shiftersReverse () {
+    public void shiftToHigh () {
 
         // Move the shifters
         shifter.set(DoubleSolenoid.Value.kReverse);
@@ -92,6 +111,9 @@ public class Drivetrain extends Subsystem {
     public void reset () {
 
         // TODO: Zero all sensors, stop all motors, return shifters to initial position
+
+        rightEncoder.reset();
+        leftEncoder .reset();
 
     }
 

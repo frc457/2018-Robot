@@ -3,6 +3,7 @@ package org.greasemonkeys457.robot2018;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greasemonkeys457.robot2018.subsystems.Drivetrain;
 
 public class Robot extends IterativeRobot {
@@ -23,7 +24,7 @@ public class Robot extends IterativeRobot {
 
     public void disabledInit() {
 
-        drivetrain.reset();
+        reset();
 
     }
 
@@ -49,5 +50,13 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {}
+
+
+    // Reset all subsystems
+    public void reset () {
+
+        drivetrain.reset();
+
+    }
 
 }

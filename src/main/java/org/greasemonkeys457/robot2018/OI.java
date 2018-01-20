@@ -10,7 +10,7 @@ import org.greasemonkeys457.robot2018.commands.DriveToggleGears;
 public class OI {
 
     // Controllers
-    public Joystick driverController = new Joystick(1);
+    public Joystick driverController = new Joystick(0);
 
     // Buttons
     public Button driverA  = new JoystickButton(driverController, 1);

@@ -10,7 +10,7 @@ public class DriveShiftersReverse extends Command {
     }
 
     public void execute () {
-        Robot.drivetrain.shiftersReverse();
+        Robot.drivetrain.shiftToHigh();
     }
 
     public boolean isFinished () {

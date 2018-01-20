@@ -12,7 +12,7 @@ public class DriveShiftersForward extends Command {
     }
 
     public void execute () {
-        Robot.drivetrain.shiftersForward();
+        Robot.drivetrain.shiftToLow();
     }
 
     public boolean isFinished () {
