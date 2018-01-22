@@ -3,14 +3,14 @@ package org.greasemonkeys457.robot2018;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import org.greasemonkeys457.robot2018.commands.DriveShiftersForward;
-import org.greasemonkeys457.robot2018.commands.DriveShiftersReverse;
+import org.greasemonkeys457.robot2018.commands.DriveShiftToLow;
+import org.greasemonkeys457.robot2018.commands.DriveShiftToHigh;
 import org.greasemonkeys457.robot2018.commands.DriveToggleGears;
 
 public class OI {
 
     // Controllers
-    public Joystick driverController = new Joystick(1);
+    public Joystick driverController = new Joystick(0);
 
     // Buttons
     public Button driverA  = new JoystickButton(driverController, 1);
@@ -21,8 +21,8 @@ public class OI {
 
         // Drive shifting
         driverA.whenPressed(new DriveToggleGears());
-        driverLB.whenPressed(new DriveShiftersForward());
-        driverRB.whenPressed(new DriveShiftersReverse());
+        driverLB.whenPressed(new DriveShiftToLow());
+        driverRB.whenPressed(new DriveShiftToHigh());
 
     }
 
