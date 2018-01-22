@@ -11,7 +11,7 @@ import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 
 public class Drivetrain extends Subsystem {
 
-    // Actuators
+    // Hardware
     TalonSRX rightMaster;
     TalonSRX rightFollower;
     TalonSRX leftMaster;
