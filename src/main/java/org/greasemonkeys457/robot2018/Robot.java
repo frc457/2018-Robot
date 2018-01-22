@@ -16,22 +16,20 @@ public class Robot extends IterativeRobot {
 
     public void robotInit() {
 
+        // Define subsystems
         drivetrain = new Drivetrain();
 
+        // Define OI
         oi = new OI();
 
     }
 
     public void disabledInit() {
-
         reset();
-
     }
 
     public void autonomousInit() {
-
         // TODO: Autonomous selector
-
     }
 
     public void teleopInit() {}

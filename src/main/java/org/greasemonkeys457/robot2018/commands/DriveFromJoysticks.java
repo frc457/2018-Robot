@@ -15,14 +15,17 @@ public class DriveFromJoysticks extends Command {
         double rightSpeed = -Robot.oi.driverController.getRawAxis(5);
         double leftSpeed  = -Robot.oi.driverController.getRawAxis(1);
 
+        // Triggers are used to drive straight backward / forward
         double rightTrigger = Robot.oi.driverController.getRawAxis(3);
         double leftTrigger  = Robot.oi.driverController.getRawAxis(2);
 
+        // Straight forward using right trigger
         if (Math.abs(rightTrigger) >= 0.01 ) {
             rightSpeed = rightTrigger;
             leftSpeed  = rightTrigger;
         }
 
+        // Straight backward using left trigger
         if (Math.abs(leftTrigger) >= 0.01 ) {
             rightSpeed = -leftTrigger;
             leftSpeed  = -leftTrigger;

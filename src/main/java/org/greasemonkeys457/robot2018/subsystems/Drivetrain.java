@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.Constants;
-import org.greasemonkeys457.robot2018.Robot;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 
@@ -25,7 +24,7 @@ public class Drivetrain extends Subsystem {
     public Encoder leftEncoder;
 
     // State variables
-    public boolean areShiftersForward;
+    public boolean isLowGear;
 
     // Constants
     double scale = Constants.scale;
@@ -82,7 +81,7 @@ public class Drivetrain extends Subsystem {
         shifter.set(DoubleSolenoid.Value.kForward);
 
         // Set the state variable
-        areShiftersForward = true;
+        isLowGear = true;
 
     }
     public void shiftToHigh () {
@@ -91,7 +90,7 @@ public class Drivetrain extends Subsystem {
         shifter.set(DoubleSolenoid.Value.kReverse);
 
         // Set the state variable
-        areShiftersForward = false;
+        isLowGear = false;
 
     }
 

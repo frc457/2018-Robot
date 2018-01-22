@@ -3,14 +3,14 @@ package org.greasemonkeys457.robot2018.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.greasemonkeys457.robot2018.Robot;
 
-public class DriveShiftersReverse extends Command {
+public class DriveShiftToLow extends Command {
 
-    public DriveShiftersReverse () {
+    public DriveShiftToLow() {
         requires(Robot.drivetrain);
     }
 
     public void execute () {
-        Robot.drivetrain.shiftToHigh();
+        Robot.drivetrain.shiftToLow();
     }
 
     public boolean isFinished () {
