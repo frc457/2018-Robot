@@ -2,9 +2,15 @@ package org.greasemonkeys457.robot2018.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
+import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.modifiers.TankModifier;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
@@ -12,16 +18,20 @@ import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 public class Drivetrain extends Subsystem {
 
     // Hardware
-    TalonSRX rightMaster;
-    TalonSRX rightFollower;
-    TalonSRX leftMaster;
-    TalonSRX leftFollower;
+    private TalonSRX rightMaster;
+    private TalonSRX rightFollower;
+    private TalonSRX leftMaster;
+    private TalonSRX leftFollower;
 
-    DoubleSolenoid shifter;
+    private DoubleSolenoid shifter;
 
     // Sensors
     public Encoder rightEncoder;
     public Encoder leftEncoder;
+
+    // Pathfinder variables
+    private EncoderFollower rightEncoderFollower;
+    private EncoderFollower leftEncoderFollower;
 
     // State variables
     public boolean isLowGear;
@@ -29,7 +39,10 @@ public class Drivetrain extends Subsystem {
     // Constants
     double scale = Constants.scale;
     double wheelDiameter = Constants.wheelDiameter;
-    double encoderPulsesPerRev = Constants.pulsesPerRev;
+    int encoderPulsesPerRev = Constants.pulsesPerRev;
+    double maxVelocity = Constants.maxVelocity;
+    double maxAccel = Constants.maxAccel;
+    double maxJerk = Constants.maxJerk;
 
     public Drivetrain () {
 
@@ -113,6 +126,82 @@ public class Drivetrain extends Subsystem {
 
         rightEncoder.reset();
         leftEncoder .reset();
+
+    }
+
+    // ----- Pathfinder methods -----
+
+    public void generatePath () {
+
+        /**
+         * Some notes:
+         *
+         * 1. We'll be using feet for units of length instead of meters. Jaci's documentation and example code of
+         *    Pathfinder uses meters; however, so long as you stay consistent with the unit, Pathfinder will work with
+         *    whatever unit you give it.
+         *
+         * 2. We'll try to document what our code is doing to the best of our ability. However, if you find yourself
+         *    stuck or confused, the Pathfinder examples and/or docs might help. Follow the link below to get there.
+         *
+         *    https://github.com/JacisNonsense/Pathfinder/tree/master/Pathfinder-Java
+         */
+
+        // TODO: Measure max velocity, acceleration, and jerk
+
+        // Trajectory configuration
+        Trajectory.Config config = new Trajectory.Config(
+                Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
+                Trajectory.Config.SAMPLES_HIGH,     // Sample count
+                0.05,                               // Time step
+                maxVelocity,                        // Max velocity
+                maxAccel,                           // Max acceleration
+                maxJerk                             // Max jerk
+        );
+
+        // Waypoints
+        Waypoint[] straightPoints = new Waypoint[] {
+                new Waypoint(0.0, 0.0, 0.0),
+                new Waypoint(8.0, 0.0, 0.0),
+        };
+
+        // Generate a Trajectory
+        Trajectory trajectory = Pathfinder.generate(straightPoints, config);
+
+        // Modify the trajectory for tank drive using the wheelbase width
+        TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
+
+        // Set the encoder followers
+        rightEncoderFollower = new EncoderFollower(modifier.getRightTrajectory());
+        leftEncoderFollower = new EncoderFollower(modifier.getLeftTrajectory());
+
+    }
+
+    public void configureFollowers() {
+
+        // TODO: Double check that the ticks per revolution is accurate
+        // TODO: Tune PID loops
+
+        // Configure the encoders
+        rightEncoderFollower.configureEncoder(rightEncoder.getRaw(), encoderPulsesPerRev, wheelDiameter);
+        leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, wheelDiameter);
+
+        // Configure PIDVA
+        rightEncoderFollower.configurePIDVA(1.0, 0.0, 0.0, (1/maxVelocity), 0);
+        leftEncoderFollower .configurePIDVA(1.0, 0.0, 0.0, (1/maxVelocity), 0);
+
+    }
+
+    public void followPath () {
+
+        // Calculate desired motor output
+        double rightOutput = rightEncoderFollower.calculate(leftEncoder.getRaw());
+        double leftOutput  = leftEncoderFollower.calculate(leftEncoder.getRaw());
+
+        // TODO: Add a control loop for angle
+
+        // Set the motor speeds according to the calculated outputs
+        setRightSpeed(rightOutput);
+        setLeftSpeed(leftOutput);
 
     }
 
