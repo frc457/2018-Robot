@@ -44,6 +44,13 @@ public class Drivetrain extends Subsystem {
     double maxAccel = Constants.maxAccel;
     double maxJerk = Constants.maxJerk;
 
+    // TESTING
+    public double topRightSpeed,  topLeftSpeed  = 0.0;
+    public double topRightAccel,  topLeftAccel  = 0.0;
+    public double topRightJerk,   topLeftJerk   = 0.0;
+    public double lastRightSpeed, lastLeftSpeed = 0.0;
+    public double lastRightAccel, lastLeftAccel = 0.0;
+
     public Drivetrain () {
 
         rightMaster   = new TalonSRX(RobotMap.rfMotor);
@@ -107,6 +114,25 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    public double getRightSpeed () {
+        return rightEncoder.getRate();
+    }
+    public double getLeftSpeed () {
+        return leftEncoder.getRate();
+    }
+    public double getRightAccel () {
+        return (rightEncoder.getRate() - lastRightSpeed) / 0.2;
+    }
+    public double getLeftAccel () {
+        return (leftEncoder.getRate() - lastLeftSpeed) / 0.2;
+    }
+    public double getRightJerk () {
+        return (getRightAccel() - lastRightAccel) / 0.2;
+    }
+    public double getLeftJerk () {
+        return (getLeftAccel() - lastLeftAccel) / 0.2;
+    }
+
     public double driveScaling (double speed) {
 
         // Run the input speed through the scaling function.
@@ -126,6 +152,10 @@ public class Drivetrain extends Subsystem {
 
         rightEncoder.reset();
         leftEncoder .reset();
+
+        // TESTING
+        topRightSpeed = 0.0;
+        topLeftSpeed = 0.0;
 
     }
 
