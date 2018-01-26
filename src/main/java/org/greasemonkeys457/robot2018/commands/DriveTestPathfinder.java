@@ -10,8 +10,12 @@ public class DriveTestPathfinder extends Command {
         // This command uses the drivetrain, so...
         requires(Robot.drivetrain);
 
-        // Set up the path
-        Robot.drivetrain.generatePath();
+    }
+
+    public void initialize () {
+
+        // Reset the encoders
+        Robot.drivetrain.reset();
 
         // Configure followers
         Robot.drivetrain.configureFollowers();
@@ -28,7 +32,7 @@ public class DriveTestPathfinder extends Command {
     public boolean isFinished () {
 
         // TODO: Add logic to tell when this command is done
-        return true;
+        return false;
 
     }
 

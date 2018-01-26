@@ -53,20 +53,20 @@ public class Robot extends IterativeRobot {
         // TESTING
 
         // Check for top values
-        if (drivetrain.getLeftSpeed() > drivetrain.topLeftSpeed) {
-            drivetrain.topLeftSpeed = drivetrain.getLeftSpeed();
-        }
         if (drivetrain.getRightSpeed() > drivetrain.topRightSpeed) {
             drivetrain.topRightSpeed = drivetrain.getRightSpeed();
         }
         if (drivetrain.getRightAccel() > drivetrain.topRightAccel) {
             drivetrain.topRightAccel = drivetrain.getRightAccel();
         }
-        if (drivetrain.getLeftAccel() > drivetrain.topLeftAccel) {
-            drivetrain.topRightAccel = drivetrain.getLeftAccel();
-        }
         if (drivetrain.getRightJerk() > drivetrain.topRightJerk) {
             drivetrain.topRightJerk = drivetrain.getRightJerk();
+        }
+        if (drivetrain.getLeftSpeed() > drivetrain.topLeftSpeed) {
+            drivetrain.topLeftSpeed = drivetrain.getLeftSpeed();
+        }
+        if (drivetrain.getLeftAccel() > drivetrain.topLeftAccel) {
+            drivetrain.topLeftAccel = drivetrain.getLeftAccel();
         }
         if (drivetrain.getLeftJerk() > drivetrain.topLeftJerk) {
             drivetrain.topLeftJerk = drivetrain.getLeftJerk();
@@ -92,6 +92,9 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("Left speed",  drivetrain.getLeftSpeed());
         SmartDashboard.putNumber("Left accel",  drivetrain.getLeftAccel());
         SmartDashboard.putNumber("Left jerk",   drivetrain.getLeftJerk());
+
+        SmartDashboard.putNumber("Right distance", drivetrain.rightEncoder.getDistance());
+        SmartDashboard.putNumber("Left distance",  drivetrain.leftEncoder.getDistance());
 
     }
 

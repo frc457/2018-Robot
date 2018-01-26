@@ -2,7 +2,6 @@ package org.greasemonkeys457.robot2018.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -115,22 +114,22 @@ public class Drivetrain extends Subsystem {
     }
 
     public double getRightSpeed () {
-        return rightEncoder.getRate();
+        return Math.abs(rightEncoder.getRate());
     }
     public double getLeftSpeed () {
-        return leftEncoder.getRate();
+        return Math.abs(leftEncoder.getRate());
     }
     public double getRightAccel () {
-        return (rightEncoder.getRate() - lastRightSpeed) / 0.2;
+        return Math.abs((getRightSpeed() - lastRightSpeed) / 0.2);
     }
     public double getLeftAccel () {
-        return (leftEncoder.getRate() - lastLeftSpeed) / 0.2;
+        return Math.abs((getLeftSpeed() - lastLeftSpeed) / 0.2);
     }
     public double getRightJerk () {
-        return (getRightAccel() - lastRightAccel) / 0.2;
+        return Math.abs((getRightAccel() - lastRightAccel) / 0.2);
     }
     public double getLeftJerk () {
-        return (getLeftAccel() - lastLeftAccel) / 0.2;
+        return Math.abs((getLeftAccel() - lastLeftAccel) / 0.2);
     }
 
     public double driveScaling (double speed) {
@@ -154,8 +153,12 @@ public class Drivetrain extends Subsystem {
         leftEncoder .reset();
 
         // TESTING
-        topRightSpeed = 0.0;
         topLeftSpeed = 0.0;
+        topLeftAccel = 0.0;
+        topLeftJerk = 0.0;
+        topRightSpeed = 0.0;
+        topRightAccel = 0.0;
+        topRightJerk = 0.0;
 
     }
 
@@ -191,7 +194,7 @@ public class Drivetrain extends Subsystem {
         // Waypoints
         Waypoint[] straightPoints = new Waypoint[] {
                 new Waypoint(0.0, 0.0, 0.0),
-                new Waypoint(8.0, 0.0, 0.0),
+                new Waypoint(28.0, 0.0, 0.0),
         };
 
         // Generate a Trajectory
@@ -216,8 +219,8 @@ public class Drivetrain extends Subsystem {
         leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, wheelDiameter);
 
         // Configure PIDVA
-        rightEncoderFollower.configurePIDVA(1.0, 0.0, 0.0, (1/maxVelocity), 0);
-        leftEncoderFollower .configurePIDVA(1.0, 0.0, 0.0, (1/maxVelocity), 0);
+        rightEncoderFollower.configurePIDVA(0.5, 0.0, 0.0, (1/maxVelocity), 0);
+        leftEncoderFollower .configurePIDVA(0.5, 0.0, 0.0, (1/maxVelocity), 0);
 
     }
 
