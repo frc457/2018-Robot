@@ -31,8 +31,7 @@ public class DriveTestPathfinder extends Command {
 
     public boolean isFinished () {
 
-        // TODO: Add logic to tell when this command is done
-        return false;
+        return Robot.drivetrain.leftEncoderFollower.isFinished() && Robot.drivetrain.rightEncoderFollower.isFinished();
 
     }
 
