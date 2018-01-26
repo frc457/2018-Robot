@@ -77,6 +77,10 @@ public class Drivetrain extends Subsystem {
 
         // ------ Talon configuration ends ------
 
+        // Pathfinder
+        rightEncoderFollower = new EncoderFollower();
+        leftEncoderFollower = new EncoderFollower();
+
     }
 
     public void setRightSpeed (double speed) {
@@ -178,6 +182,8 @@ public class Drivetrain extends Subsystem {
          *    https://github.com/JacisNonsense/Pathfinder/tree/master/Pathfinder-Java
          */
 
+        System.out.println("Generating path. --------------------");
+
         // Trajectory configuration
         Trajectory.Config config = new Trajectory.Config(
                 Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
@@ -201,8 +207,8 @@ public class Drivetrain extends Subsystem {
         TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
 
         // Set the encoder followers
-        rightEncoderFollower = new EncoderFollower(modifier.getRightTrajectory());
-        leftEncoderFollower = new EncoderFollower(modifier.getLeftTrajectory());
+        rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
+        leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
 
     }
 
