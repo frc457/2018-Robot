@@ -246,7 +246,7 @@ public class Drivetrain extends Subsystem {
     public void followPath () {
 
         // Calculate desired motor output
-        double rightOutput = rightEncoderFollower.calculate(leftEncoder.getRaw());
+        double rightOutput = rightEncoderFollower.calculate(rightEncoder.getRaw());
         double leftOutput  = leftEncoderFollower.calculate(leftEncoder.getRaw());
 
         // TODO: Add a control loop for angle
