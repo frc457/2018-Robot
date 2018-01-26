@@ -137,6 +137,13 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    public void zeroSensors () {
+
+        rightEncoder.reset();
+        leftEncoder.reset();
+
+    }
+
     public void reset () {
 
         // TODO: Zero all sensors, stop all motors, return shifters to initial position
@@ -171,8 +178,6 @@ public class Drivetrain extends Subsystem {
          *    https://github.com/JacisNonsense/Pathfinder/tree/master/Pathfinder-Java
          */
 
-        // TODO: Measure max velocity, acceleration, and jerk
-
         // Trajectory configuration
         Trajectory.Config config = new Trajectory.Config(
                 Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
@@ -201,18 +206,32 @@ public class Drivetrain extends Subsystem {
 
     }
 
-    public void configureFollowers() {
+    public void configureFollowers () {
 
         // TODO: Double check that the ticks per revolution is accurate
         // TODO: Tune PID loops
 
         // Configure the encoders
-        rightEncoderFollower.configureEncoder(rightEncoder.getRaw(), encoderPulsesPerRev, wheelDiameter);
-        leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, wheelDiameter);
+        rightEncoderFollower.configureEncoder(rightEncoder.getRaw(), encoderPulsesPerRev, Constants.kDriveWheelDiameter);
+        leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, Constants.kDriveWheelDiameter);
 
         // Configure PIDVA
         rightEncoderFollower.configurePIDVA(0.5, 0.0, 0.0, (1/maxVelocity), 0);
         leftEncoderFollower .configurePIDVA(0.5, 0.0, 0.0, (1/maxVelocity), 0);
+
+    }
+
+    public void resetFollowers () {
+
+        // Reset the followers
+        rightEncoderFollower.reset();
+        leftEncoderFollower.reset();
+
+        // Reset the sensors
+        zeroSensors();
+
+        // Reconfigure followers
+        configureFollowers();
 
     }
 

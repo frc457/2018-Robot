@@ -14,17 +14,17 @@ public class DriveTestPathfinder extends Command {
 
     public void initialize () {
 
-        // Reset the encoders
-        Robot.drivetrain.reset();
+        // Reset the followers
+        Robot.drivetrain.resetFollowers();
 
-        // Configure followers
-        Robot.drivetrain.configureFollowers();
+        // Make sure the robot is in low gear
+        Robot.drivetrain.shiftToLow();
 
     }
 
     public void execute () {
 
-        // Tell the drivetrain to follow the path generated in this command's constructor
+        // Tell the drivetrain to follow the path previously generated
         Robot.drivetrain.followPath();
 
     }
