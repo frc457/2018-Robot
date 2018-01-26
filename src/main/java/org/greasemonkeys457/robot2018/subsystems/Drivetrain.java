@@ -188,7 +188,7 @@ public class Drivetrain extends Subsystem {
         Trajectory.Config config = new Trajectory.Config(
                 Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
                 Trajectory.Config.SAMPLES_HIGH,     // Sample count
-                0.05,                               // Time step
+                0.02,                               // Time step
                 maxVelocity,                        // Max velocity
                 maxAccel,                           // Max acceleration
                 maxJerk                             // Max jerk
@@ -197,7 +197,7 @@ public class Drivetrain extends Subsystem {
         // Waypoints
         Waypoint[] straightPoints = new Waypoint[] {
                 new Waypoint(0.0, 0.0, 0.0),
-                new Waypoint(28.0, 0.0, 0.0),
+                new Waypoint(7.0, 0.0, 0.0),
         };
 
         // Generate a Trajectory
@@ -209,6 +209,8 @@ public class Drivetrain extends Subsystem {
         // Set the encoder followers
         rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
         leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
+
+        System.out.println("Done generating path!");
 
     }
 
