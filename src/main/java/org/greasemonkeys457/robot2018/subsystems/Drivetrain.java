@@ -17,38 +17,30 @@ import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 public class Drivetrain extends Subsystem {
 
     // Hardware
-    private TalonSRX rightMaster;
-    private TalonSRX rightFollower;
-    private TalonSRX leftMaster;
-    private TalonSRX leftFollower;
-
+    private TalonSRX rightMaster, rightFollower, leftMaster, leftFollower;
     private DoubleSolenoid shifter;
 
     // Sensors
-    public Encoder rightEncoder;
-    public Encoder leftEncoder;
+    public Encoder rightEncoder, leftEncoder;
 
     // Pathfinder variables
-    private EncoderFollower rightEncoderFollower;
-    private EncoderFollower leftEncoderFollower;
+    private EncoderFollower rightEncoderFollower, leftEncoderFollower;
 
     // State variables
-    public boolean isLowGear;
+    public boolean mIsLowGear;
 
     // Constants
-    double scale = Constants.scale;
-    double wheelDiameter = Constants.wheelDiameter;
-    int encoderPulsesPerRev = Constants.pulsesPerRev;
-    double maxVelocity = Constants.maxVelocity;
-    double maxAccel = Constants.maxAccel;
-    double maxJerk = Constants.maxJerk;
+    int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
+    double maxVelocity = Constants.kLowGearMaxVelocity;
+    double maxAccel = Constants.kLowGearMaxAccel;
+    double maxJerk = Constants.kLowGearMaxJerk;
 
     // TESTING
-    public double topRightSpeed,  topLeftSpeed  = 0.0;
-    public double topRightAccel,  topLeftAccel  = 0.0;
-    public double topRightJerk,   topLeftJerk   = 0.0;
-    public double lastRightSpeed, lastLeftSpeed = 0.0;
-    public double lastRightAccel, lastLeftAccel = 0.0;
+    public double topRightSpeed, topRightAccel, topRightJerk,
+                  topLeftSpeed,  topLeftAccel,  topLeftJerk = 0.0;
+
+    public double lastRightSpeed, lastRightAccel,
+                  lastLeftSpeed,  lastLeftAccel = 0.0;
 
     public Drivetrain () {
 
@@ -66,8 +58,8 @@ public class Drivetrain extends Subsystem {
         leftEncoder  = new Encoder(RobotMap.leftEncoderA,  RobotMap.leftEncoderB);
 
         // Encoder configuration
-        rightEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
-        leftEncoder .setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+        rightEncoder.setDistancePerPulse((Constants.kDriveWheelDiameter * Math.PI) / encoderPulsesPerRev);
+        leftEncoder .setDistancePerPulse((Constants.kDriveWheelDiameter * Math.PI) / encoderPulsesPerRev);
 
         leftEncoder.setReverseDirection(true);
 
@@ -100,7 +92,7 @@ public class Drivetrain extends Subsystem {
         shifter.set(DoubleSolenoid.Value.kForward);
 
         // Set the state variable
-        isLowGear = true;
+        mIsLowGear = true;
 
     }
     public void shiftToHigh () {
@@ -109,7 +101,7 @@ public class Drivetrain extends Subsystem {
         shifter.set(DoubleSolenoid.Value.kReverse);
 
         // Set the state variable
-        isLowGear = false;
+        mIsLowGear = false;
 
     }
 
@@ -135,7 +127,7 @@ public class Drivetrain extends Subsystem {
     public double driveScaling (double speed) {
 
         // Run the input speed through the scaling function.
-        speed = (speed * Math.abs(speed) * Math.abs(speed) * scale);
+        speed = (speed * Math.abs(speed) * Math.abs(speed) * Constants.kDriveScale);
 
         if (Math.abs(speed) < 0.001) {
             speed = 0.0;
