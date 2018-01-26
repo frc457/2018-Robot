@@ -255,6 +255,13 @@ public class Drivetrain extends Subsystem {
         setRightSpeed(rightOutput);
         setLeftSpeed(leftOutput);
 
+        // Bugfixing code
+        Trajectory.Segment rightCurrentSegment = rightEncoderFollower.getSegment();
+        Trajectory.Segment leftCurrentSegment = leftEncoderFollower.getSegment();
+
+        System.out.printf("RIGHT - t: %f | a: %f | e: %f", rightCurrentSegment.position, rightEncoder.getDistance(), (rightCurrentSegment.position - rightEncoder.getDistance()));
+        System.out.printf("LEFT  - t: %f | a: %f | e: %f", leftCurrentSegment.position, leftEncoder.getDistance(), (leftCurrentSegment.position - leftEncoder.getDistance()));
+
     }
 
     public void initDefaultCommand () {
