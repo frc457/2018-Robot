@@ -2,7 +2,6 @@ package org.greasemonkeys457.robot2018.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -18,31 +17,30 @@ import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 public class Drivetrain extends Subsystem {
 
     // Hardware
-    private TalonSRX rightMaster;
-    private TalonSRX rightFollower;
-    private TalonSRX leftMaster;
-    private TalonSRX leftFollower;
-
+    private TalonSRX rightMaster, rightFollower, leftMaster, leftFollower;
     private DoubleSolenoid shifter;
 
     // Sensors
-    public Encoder rightEncoder;
-    public Encoder leftEncoder;
+    public Encoder rightEncoder, leftEncoder;
 
     // Pathfinder variables
-    private EncoderFollower rightEncoderFollower;
-    private EncoderFollower leftEncoderFollower;
+    public EncoderFollower rightEncoderFollower, leftEncoderFollower;
 
     // State variables
-    public boolean isLowGear;
+    public boolean mIsLowGear;
 
     // Constants
-    double scale = Constants.scale;
-    double wheelDiameter = Constants.wheelDiameter;
-    int encoderPulsesPerRev = Constants.pulsesPerRev;
-    double maxVelocity = Constants.maxVelocity;
-    double maxAccel = Constants.maxAccel;
-    double maxJerk = Constants.maxJerk;
+    int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
+    double maxVelocity = Constants.kLowGearMaxVelocity;
+    double maxAccel = Constants.kLowGearMaxAccel;
+    double maxJerk = Constants.kLowGearMaxJerk;
+
+    // TESTING
+    public double topRightSpeed, topRightAccel, topRightJerk,
+                  topLeftSpeed,  topLeftAccel,  topLeftJerk = 0.0;
+
+    public double lastRightSpeed, lastRightAccel,
+                  lastLeftSpeed,  lastLeftAccel = 0.0;
 
     public Drivetrain () {
 
@@ -60,8 +58,8 @@ public class Drivetrain extends Subsystem {
         leftEncoder  = new Encoder(RobotMap.leftEncoderA,  RobotMap.leftEncoderB);
 
         // Encoder configuration
-        rightEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
-        leftEncoder .setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+        rightEncoder.setDistancePerPulse((Constants.kDriveWheelDiameter * Math.PI) / encoderPulsesPerRev);
+        leftEncoder .setDistancePerPulse((Constants.kDriveWheelDiameter * Math.PI) / encoderPulsesPerRev);
 
         leftEncoder.setReverseDirection(true);
 
@@ -79,6 +77,10 @@ public class Drivetrain extends Subsystem {
 
         // ------ Talon configuration ends ------
 
+        // Pathfinder
+        rightEncoderFollower = new EncoderFollower();
+        leftEncoderFollower = new EncoderFollower();
+
     }
 
     public void setRightSpeed (double speed) {
@@ -94,7 +96,7 @@ public class Drivetrain extends Subsystem {
         shifter.set(DoubleSolenoid.Value.kForward);
 
         // Set the state variable
-        isLowGear = true;
+        mIsLowGear = true;
 
     }
     public void shiftToHigh () {
@@ -103,14 +105,33 @@ public class Drivetrain extends Subsystem {
         shifter.set(DoubleSolenoid.Value.kReverse);
 
         // Set the state variable
-        isLowGear = false;
+        mIsLowGear = false;
 
+    }
+
+    public double getRightSpeed () {
+        return Math.abs(rightEncoder.getRate());
+    }
+    public double getLeftSpeed () {
+        return Math.abs(leftEncoder.getRate());
+    }
+    public double getRightAccel () {
+        return Math.abs((getRightSpeed() - lastRightSpeed) / 0.2);
+    }
+    public double getLeftAccel () {
+        return Math.abs((getLeftSpeed() - lastLeftSpeed) / 0.2);
+    }
+    public double getRightJerk () {
+        return Math.abs((getRightAccel() - lastRightAccel) / 0.2);
+    }
+    public double getLeftJerk () {
+        return Math.abs((getLeftAccel() - lastLeftAccel) / 0.2);
     }
 
     public double driveScaling (double speed) {
 
         // Run the input speed through the scaling function.
-        speed = (speed * Math.abs(speed) * Math.abs(speed) * scale);
+        speed = (speed * Math.abs(speed) * Math.abs(speed) * Constants.kDriveScale);
 
         if (Math.abs(speed) < 0.001) {
             speed = 0.0;
@@ -120,12 +141,27 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    public void zeroSensors () {
+
+        rightEncoder.reset();
+        leftEncoder.reset();
+
+    }
+
     public void reset () {
 
         // TODO: Zero all sensors, stop all motors, return shifters to initial position
 
         rightEncoder.reset();
         leftEncoder .reset();
+
+        // TESTING
+        topLeftSpeed = 0.0;
+        topLeftAccel = 0.0;
+        topLeftJerk = 0.0;
+        topRightSpeed = 0.0;
+        topRightAccel = 0.0;
+        topRightJerk = 0.0;
 
     }
 
@@ -146,13 +182,13 @@ public class Drivetrain extends Subsystem {
          *    https://github.com/JacisNonsense/Pathfinder/tree/master/Pathfinder-Java
          */
 
-        // TODO: Measure max velocity, acceleration, and jerk
+        System.out.println("Generating path. --------------------");
 
         // Trajectory configuration
         Trajectory.Config config = new Trajectory.Config(
                 Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
                 Trajectory.Config.SAMPLES_HIGH,     // Sample count
-                0.05,                               // Time step
+                0.02,                               // Time step
                 maxVelocity,                        // Max velocity
                 maxAccel,                           // Max acceleration
                 maxJerk                             // Max jerk
@@ -161,40 +197,63 @@ public class Drivetrain extends Subsystem {
         // Waypoints
         Waypoint[] straightPoints = new Waypoint[] {
                 new Waypoint(0.0, 0.0, 0.0),
-                new Waypoint(8.0, 0.0, 0.0),
+                new Waypoint(7.0, 0.0, 0.0),
+        };
+
+        // Center to right switch
+        Waypoint[] centerToRightSwitchPoints = new Waypoint[] {
+                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((28.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((103.5/12.0), 9.0, 0.0),
         };
 
         // Generate a Trajectory
-        Trajectory trajectory = Pathfinder.generate(straightPoints, config);
+        Trajectory trajectory = Pathfinder.generate(centerToRightSwitchPoints, config);
 
         // Modify the trajectory for tank drive using the wheelbase width
         TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
 
         // Set the encoder followers
-        rightEncoderFollower = new EncoderFollower(modifier.getRightTrajectory());
-        leftEncoderFollower = new EncoderFollower(modifier.getLeftTrajectory());
+        rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
+        leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
+
+        System.out.println("Done generating path!");
 
     }
 
-    public void configureFollowers() {
+    public void configureFollowers () {
 
         // TODO: Double check that the ticks per revolution is accurate
         // TODO: Tune PID loops
 
         // Configure the encoders
-        rightEncoderFollower.configureEncoder(rightEncoder.getRaw(), encoderPulsesPerRev, wheelDiameter);
-        leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, wheelDiameter);
+        rightEncoderFollower.configureEncoder(rightEncoder.getRaw(), encoderPulsesPerRev, Constants.kDriveWheelDiameter);
+        leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, Constants.kDriveWheelDiameter);
 
         // Configure PIDVA
-        rightEncoderFollower.configurePIDVA(1.0, 0.0, 0.0, (1/maxVelocity), 0);
-        leftEncoderFollower .configurePIDVA(1.0, 0.0, 0.0, (1/maxVelocity), 0);
+        rightEncoderFollower.configurePIDVA(0.001, 0.0, 0.0, (1/maxVelocity), 0);
+        leftEncoderFollower .configurePIDVA(0.001, 0.0, 0.0, (1/maxVelocity), 0);
+
+    }
+
+    public void resetFollowers () {
+
+        // Reset the followers
+        rightEncoderFollower.reset();
+        leftEncoderFollower.reset();
+
+        // Reset the sensors
+        zeroSensors();
+
+        // Reconfigure followers
+        configureFollowers();
 
     }
 
     public void followPath () {
 
         // Calculate desired motor output
-        double rightOutput = rightEncoderFollower.calculate(leftEncoder.getRaw());
+        double rightOutput = rightEncoderFollower.calculate(rightEncoder.getRaw());
         double leftOutput  = leftEncoderFollower.calculate(leftEncoder.getRaw());
 
         // TODO: Add a control loop for angle
@@ -203,6 +262,24 @@ public class Drivetrain extends Subsystem {
         setRightSpeed(rightOutput);
         setLeftSpeed(leftOutput);
 
+        // Bugfixing code
+        Trajectory.Segment rightCurrentSegment;
+        Trajectory.Segment leftCurrentSegment;
+        try {
+            rightCurrentSegment = rightEncoderFollower.getSegment();
+            leftCurrentSegment = leftEncoderFollower.getSegment();
+        } catch (Exception e) {
+            rightCurrentSegment = new Trajectory.Segment(0,0,0,0,0,0,0,0);
+            leftCurrentSegment = new Trajectory.Segment(0,0,0,0,0,0,0,0);
+        }
+
+        System.out.printf("RIGHT - t: %f | a: %f | e: %f\n", rightCurrentSegment.position, rightEncoder.getDistance(), (rightCurrentSegment.position - rightEncoder.getDistance()));
+        System.out.printf("LEFT  - t: %f | a: %f | e: %f\n", leftCurrentSegment.position, leftEncoder.getDistance(), (leftCurrentSegment.position - leftEncoder.getDistance()));
+
+        /*
+        System.out.println("Setting right speed to " + rightOutput);
+        System.out.println("Setting left speed to " + leftOutput);
+        */
     }
 
     public void initDefaultCommand () {

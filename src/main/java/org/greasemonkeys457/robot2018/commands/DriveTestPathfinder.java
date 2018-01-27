@@ -10,25 +10,28 @@ public class DriveTestPathfinder extends Command {
         // This command uses the drivetrain, so...
         requires(Robot.drivetrain);
 
-        // Set up the path
-        Robot.drivetrain.generatePath();
+    }
 
-        // Configure followers
-        Robot.drivetrain.configureFollowers();
+    public void initialize () {
+
+        // Reset the followers
+        Robot.drivetrain.resetFollowers();
+
+        // Make sure the robot is in low gear
+        Robot.drivetrain.shiftToLow();
 
     }
 
     public void execute () {
 
-        // Tell the drivetrain to follow the path generated in this command's constructor
+        // Tell the drivetrain to follow the path previously generated
         Robot.drivetrain.followPath();
 
     }
 
     public boolean isFinished () {
 
-        // TODO: Add logic to tell when this command is done
-        return true;
+        return Robot.drivetrain.leftEncoderFollower.isFinished() && Robot.drivetrain.rightEncoderFollower.isFinished();
 
     }
 
