@@ -79,6 +79,7 @@ public class Robot extends IterativeRobot {
         drivetrain.lastLeftAccel = drivetrain.getLeftAccel();
 
         // Record top values. For science.
+        /*
         SmartDashboard.putNumber("Top right speed", drivetrain.topRightSpeed);
         SmartDashboard.putNumber("Top right accel", drivetrain.topRightAccel);
         SmartDashboard.putNumber("Top right jerk", drivetrain.topRightJerk);
@@ -95,6 +96,10 @@ public class Robot extends IterativeRobot {
 
         SmartDashboard.putNumber("Right distance", drivetrain.rightEncoder.getDistance());
         SmartDashboard.putNumber("Left distance",  drivetrain.leftEncoder.getDistance());
+        */
+
+        // Report current angle
+        SmartDashboard.putNumber("Angle", drivetrain.navx.getYaw());
 
     }
 
