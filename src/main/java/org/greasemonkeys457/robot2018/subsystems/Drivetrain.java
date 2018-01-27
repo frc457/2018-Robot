@@ -2,8 +2,10 @@ package org.greasemonkeys457.robot2018.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
@@ -19,6 +21,7 @@ public class Drivetrain extends Subsystem {
     // Hardware
     private TalonSRX rightMaster, rightFollower, leftMaster, leftFollower;
     private DoubleSolenoid shifter;
+    public AHRS navx;
 
     // Sensors
     public Encoder rightEncoder, leftEncoder;
@@ -63,8 +66,6 @@ public class Drivetrain extends Subsystem {
 
         leftEncoder.setReverseDirection(true);
 
-        // TODO: NavX
-
         // ----- Talon configuration begins -----
 
         // Set follower talons
@@ -77,9 +78,17 @@ public class Drivetrain extends Subsystem {
 
         // ------ Talon configuration ends ------
 
+        configureNavX();
+
         // Pathfinder
         rightEncoderFollower = new EncoderFollower();
         leftEncoderFollower = new EncoderFollower();
+
+    }
+
+    private void configureNavX () {
+
+        navx = new AHRS(SPI.Port.kMXP, (byte) 200);
 
     }
 
