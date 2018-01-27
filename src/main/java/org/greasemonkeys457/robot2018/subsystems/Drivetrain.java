@@ -200,8 +200,15 @@ public class Drivetrain extends Subsystem {
                 new Waypoint(7.0, 0.0, 0.0),
         };
 
+        // Center to right switch
+        Waypoint[] centerToRightSwitchPoints = new Waypoint[] {
+                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((28.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((103.5/12.0), 9.0, 0.0),
+        };
+
         // Generate a Trajectory
-        Trajectory trajectory = Pathfinder.generate(straightPoints, config);
+        Trajectory trajectory = Pathfinder.generate(centerToRightSwitchPoints, config);
 
         // Modify the trajectory for tank drive using the wheelbase width
         TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
@@ -224,8 +231,8 @@ public class Drivetrain extends Subsystem {
         leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, Constants.kDriveWheelDiameter);
 
         // Configure PIDVA
-        rightEncoderFollower.configurePIDVA(0.5, 0.0, 0.0, (1/maxVelocity), 0);
-        leftEncoderFollower .configurePIDVA(0.5, 0.0, 0.0, (1/maxVelocity), 0);
+        rightEncoderFollower.configurePIDVA(0.001, 0.0, 0.0, (1/maxVelocity), 0);
+        leftEncoderFollower .configurePIDVA(0.001, 0.0, 0.0, (1/maxVelocity), 0);
 
     }
 
@@ -256,12 +263,23 @@ public class Drivetrain extends Subsystem {
         setLeftSpeed(leftOutput);
 
         // Bugfixing code
-        Trajectory.Segment rightCurrentSegment = rightEncoderFollower.getSegment();
-        Trajectory.Segment leftCurrentSegment = leftEncoderFollower.getSegment();
+        Trajectory.Segment rightCurrentSegment;
+        Trajectory.Segment leftCurrentSegment;
+        try {
+            rightCurrentSegment = rightEncoderFollower.getSegment();
+            leftCurrentSegment = leftEncoderFollower.getSegment();
+        } catch (Exception e) {
+            rightCurrentSegment = new Trajectory.Segment(0,0,0,0,0,0,0,0);
+            leftCurrentSegment = new Trajectory.Segment(0,0,0,0,0,0,0,0);
+        }
 
         System.out.printf("RIGHT - t: %f | a: %f | e: %f\n", rightCurrentSegment.position, rightEncoder.getDistance(), (rightCurrentSegment.position - rightEncoder.getDistance()));
         System.out.printf("LEFT  - t: %f | a: %f | e: %f\n", leftCurrentSegment.position, leftEncoder.getDistance(), (leftCurrentSegment.position - leftEncoder.getDistance()));
 
+        /*
+        System.out.println("Setting right speed to " + rightOutput);
+        System.out.println("Setting left speed to " + leftOutput);
+        */
     }
 
     public void initDefaultCommand () {
