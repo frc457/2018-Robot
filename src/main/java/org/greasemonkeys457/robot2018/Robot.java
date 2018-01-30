@@ -10,6 +10,7 @@ public class Robot extends IterativeRobot {
 
     // Subsystems
     public static Drivetrain drivetrain;
+    // public static Elevator elevator;
 
     // OI
     public static OI oi;
