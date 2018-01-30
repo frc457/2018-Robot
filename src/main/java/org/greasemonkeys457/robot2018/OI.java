@@ -24,6 +24,8 @@ public class OI {
         driverLB.whenPressed(new DriveShiftToLow());
         driverRB.whenPressed(new DriveShiftToHigh());
 
+        // TODO: Add control for the mandible
+
     }
 
 }

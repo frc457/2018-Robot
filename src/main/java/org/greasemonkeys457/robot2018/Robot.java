@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greasemonkeys457.robot2018.subsystems.Drivetrain;
+import org.greasemonkeys457.robot2018.subsystems.Mandible;
 
 public class Robot extends IterativeRobot {
 
     // Subsystems
     public static Drivetrain drivetrain;
+    public static Mandible mandible;
 
     // OI
     public static OI oi;
@@ -54,6 +56,7 @@ public class Robot extends IterativeRobot {
     public void reset () {
 
         drivetrain.reset();
+        mandible.reset();
 
     }
 
