@@ -35,7 +35,7 @@ public class Drivetrain extends Subsystem {
         mLeftFollower = new TalonSRX(RobotMap.lbMotor);
 
         mRightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB);
-        mLeftEncoder = new Encoder(RobotMap.leftEncoderA,  RobotMap.leftEncoderB);
+        mLeftEncoder = new Encoder(RobotMap.leftEncoderA, RobotMap.leftEncoderB);
 
         mShifter = new DoubleSolenoid(RobotMap.shifterForward, RobotMap.shifterReverse);
 
