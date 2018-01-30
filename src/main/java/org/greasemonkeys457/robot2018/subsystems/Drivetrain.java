@@ -12,88 +12,104 @@ import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
 public class Drivetrain extends Subsystem {
 
     // Hardware
-    TalonSRX rightMaster;
-    TalonSRX rightFollower;
-    TalonSRX leftMaster;
-    TalonSRX leftFollower;
-
-    DoubleSolenoid shifter;
-
-    // Sensors
-    public Encoder rightEncoder;
-    public Encoder leftEncoder;
+    private final TalonSRX mRightMaster, mRightFollower, mLeftMaster, mLeftFollower;
+    private final DoubleSolenoid mShifter;
+    private final Encoder mRightEncoder, mLeftEncoder;
 
     // State variables
-    public boolean isLowGear;
+    private boolean mIsLowGear;
 
     // Constants
-    double scale = Constants.scale;
-    double wheelDiameter = Constants.wheelDiameter;
-    double encoderPulsesPerRev = Constants.pulsesPerRev;
+    private double scale = Constants.scale;
+    private double wheelDiameter = Constants.wheelDiameter;
+    private double encoderPulsesPerRev = Constants.pulsesPerRev;
 
     public Drivetrain () {
 
-        rightMaster   = new TalonSRX(RobotMap.rfMotor);
-        rightFollower = new TalonSRX(RobotMap.rbMotor);
-        leftMaster    = new TalonSRX(RobotMap.lfMotor);
-        leftFollower  = new TalonSRX(RobotMap.lbMotor);
-
-        shifter = new DoubleSolenoid(RobotMap.shifterForward, RobotMap.shifterReverse);
-
-        // Encoders
-        // Note: This code only works when the encoders are plugged into the DIO on the roboRIO.
-        //       If we connect the encoders through the talons, this configuration will be different.
-        rightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB);
-        leftEncoder  = new Encoder(RobotMap.leftEncoderA,  RobotMap.leftEncoderB);
-
-        // Encoder configuration
-        rightEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
-        leftEncoder .setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
-
-        leftEncoder.setReverseDirection(true);
-
         // TODO: NavX
 
-        // ----- Talon configuration begins -----
+        // Define stuff
+        mRightMaster = new TalonSRX(RobotMap.rfMotor);
+        mRightFollower = new TalonSRX(RobotMap.rbMotor);
+        mLeftMaster = new TalonSRX(RobotMap.lfMotor);
+        mLeftFollower = new TalonSRX(RobotMap.lbMotor);
 
-        // Set follower talons
-        rightFollower.follow(rightMaster);
-        leftFollower .follow(leftMaster);
+        mRightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB);
+        mLeftEncoder = new Encoder(RobotMap.leftEncoderA,  RobotMap.leftEncoderB);
 
-        // Invert the right side
-        rightMaster  .setInverted(true);
-        rightFollower.setInverted(true);
+        mShifter = new DoubleSolenoid(RobotMap.shifterForward, RobotMap.shifterReverse);
 
-        // ------ Talon configuration ends ------
+        // Configure stuff
+        configureTalons();
+        configureEncoders();
 
     }
 
+    /**
+     * Configuration functions for various things that might need configuration.
+     */
+    private void configureTalons () {
+
+        // Invert one side
+        mRightMaster.setInverted(true);
+        mRightFollower.setInverted(true);
+
+        // Set followers
+        mRightFollower.follow(mRightMaster);
+        mLeftFollower.follow(mLeftMaster);
+
+        // TODO: Limit voltage outputs
+
+    }
+    private void configureEncoders () {
+
+        // Set distance per pulse
+        mRightEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+        mLeftEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+
+        // Invert one side
+        mLeftEncoder.setReverseDirection(true);
+
+    }
+
+    /**
+     * Functions to set drivetrain's speed, in percentage (-1 to 1).
+     */
     public void setRightSpeed (double speed) {
-        rightMaster.set(ControlMode.PercentOutput, speed);
+        mRightMaster.set(ControlMode.PercentOutput, speed);
     }
     public void setLeftSpeed (double speed) {
-        leftMaster.set(ControlMode.PercentOutput, speed);
+        mLeftMaster.set(ControlMode.PercentOutput, speed);
     }
 
-    public void shiftToLow () {
+    /**
+     * Shifts the gearboxes.
+     */
+    public void setLowGear(boolean wantsLowGear) {
 
-        // Move the shifters
-        shifter.set(DoubleSolenoid.Value.kForward);
+        // Shift to the desired state
+        if (wantsLowGear)
+            mShifter.set(DoubleSolenoid.Value.kForward);
+        else
+            mShifter.set(DoubleSolenoid.Value.kReverse);
 
-        // Set the state variable
-        isLowGear = true;
-
-    }
-    public void shiftToHigh () {
-
-        // Move the shifters
-        shifter.set(DoubleSolenoid.Value.kReverse);
-
-        // Set the state variable
-        isLowGear = false;
+        // Update the state variable
+        mIsLowGear = wantsLowGear;
 
     }
 
+    /**
+     * @return Whether or not the drivetrain is in low gear
+     */
+    public boolean isLowGear () {
+        return mIsLowGear;
+    }
+
+    /**
+     * Scales the given speed.
+     * @param speed The input speed, from -1 to 1
+     * @return The scaled speed
+     */
     public double driveScaling (double speed) {
 
         // Run the input speed through the scaling function.
@@ -107,12 +123,21 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    /**
+     * Sets all hardware to its' default position.
+     */
     public void reset () {
 
-        // TODO: Zero all sensors, stop all motors, return shifters to initial position
+        // Stop the motors
+        setRightSpeed(0);
+        setLeftSpeed(0);
 
-        rightEncoder.reset();
-        leftEncoder .reset();
+        // Make sure shifters are where they should be
+        setLowGear(true);
+
+        // Zero the sensors
+        mRightEncoder.reset();
+        mLeftEncoder.reset();
 
     }
 
