@@ -12,10 +12,7 @@ public class DriveToggleGears extends Command {
     public void execute () {
 
         // Toggle the position of the shifters
-        if (Robot.drivetrain.mIsLowGear)
-            Robot.drivetrain.shiftToHigh();
-        else
-            Robot.drivetrain.shiftToLow();
+        Robot.drivetrain.setLowGear(!Robot.drivetrain.isLowGear());
 
     }
 

@@ -10,7 +10,7 @@ public class DriveShiftToHigh extends Command {
     }
 
     public void execute () {
-        Robot.drivetrain.shiftToHigh();
+        Robot.drivetrain.setLowGear(false);
     }
 
     public boolean isFinished () {
