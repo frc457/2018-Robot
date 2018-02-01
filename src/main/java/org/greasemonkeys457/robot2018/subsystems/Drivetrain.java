@@ -22,38 +22,42 @@ public class Drivetrain extends Subsystem {
     private final TalonSRX mRightMaster, mRightFollower, mLeftMaster, mLeftFollower;
     private final DoubleSolenoid mShifter;
     private final Encoder mRightEncoder, mLeftEncoder;
-    public AHRS navx;
+    private final AHRS mNavX;
 
     // State variables
     private boolean mIsLowGear;
 
     // Constants
-    int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
-    double maxVelocity = Constants.kLowGearMaxVelocity;
-    double maxAccel = Constants.kLowGearMaxAccel;
-    double maxJerk = Constants.kLowGearMaxJerk;
+    private int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
+    private double maxVelocity = Constants.kLowGearMaxVelocity;
+    private double maxAccel = Constants.kLowGearMaxAccel;
+    private double maxJerk = Constants.kLowGearMaxJerk;
+    private double wheelDiameter = Constants.kDriveWheelDiameter;
 
-    // TESTING
-    public double topRightSpeed, topRightAccel, topRightJerk,
-                  topLeftSpeed,  topLeftAccel,  topLeftJerk = 0.0;
+    // Pathfinder variables
+    public EncoderFollower rightEncoderFollower;
+    public EncoderFollower leftEncoderFollower;
 
-    public double lastRightSpeed, lastRightAccel,
-                  lastLeftSpeed,  lastLeftAccel = 0.0;
-
+    /**
+     * Constructor. Defines and configures everything.
+     */
     public Drivetrain () {
 
-        // TODO: NavX
-
-        // Define stuff
+        // Talons
         mRightMaster = new TalonSRX(RobotMap.rfMotor);
         mRightFollower = new TalonSRX(RobotMap.rbMotor);
         mLeftMaster = new TalonSRX(RobotMap.lfMotor);
         mLeftFollower = new TalonSRX(RobotMap.lbMotor);
 
+        // Solenoids
+        mShifter = new DoubleSolenoid(RobotMap.shifterForward, RobotMap.shifterReverse);
+
+        // Encoders
         mRightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB);
         mLeftEncoder = new Encoder(RobotMap.leftEncoderA, RobotMap.leftEncoderB);
 
-        mShifter = new DoubleSolenoid(RobotMap.shifterForward, RobotMap.shifterReverse);
+        // NavX
+        mNavX = new AHRS(SPI.Port.kMXP, (byte) 200);
 
         // Pathfinder path followers
         rightEncoderFollower = new EncoderFollower();
@@ -62,13 +66,11 @@ public class Drivetrain extends Subsystem {
         // Configure stuff
         configureTalons();
         configureEncoders();
-        configureNavX();
 
     }
 
-    /**
-     * Configuration functions for various things that might need configuration.
-     */
+    // Configuration functions
+
     private void configureTalons () {
 
         // Invert one side
@@ -82,6 +84,7 @@ public class Drivetrain extends Subsystem {
         // TODO: Limit voltage outputs
 
     }
+
     private void configureEncoders () {
 
         // Set distance per pulse
@@ -93,25 +96,35 @@ public class Drivetrain extends Subsystem {
 
     }
 
-    private void configureNavX () {
+    private void configureFollowers () {
 
-        navx = new AHRS(SPI.Port.kMXP, (byte) 200);
+        // PIDVA variables
+        double kP = 0.001;
+        double kI = 0;
+        double kD = 0;
+        double kV = (1.0/maxVelocity);
+        double kA = 0;
+
+        // Configure the encoders
+        rightEncoderFollower.configureEncoder(mRightEncoder.getRaw(), encoderPulsesPerRev, Constants.kDriveWheelDiameter);
+        leftEncoderFollower.configureEncoder(mLeftEncoder.getRaw(),  encoderPulsesPerRev, Constants.kDriveWheelDiameter);
+
+        // Configure PIDVA
+        rightEncoderFollower.configurePIDVA(kP, kI, kD, kV, kA);
+        leftEncoderFollower.configurePIDVA(kP, kI, kD, kV, kA);
 
     }
 
-    /**
-     * Functions to set drivetrain's speed, in percentage (-1 to 1).
-     */
+    // Setter functions
+
     public void setRightSpeed (double speed) {
         mRightMaster.set(ControlMode.PercentOutput, speed);
     }
+
     public void setLeftSpeed (double speed) {
         mLeftMaster.set(ControlMode.PercentOutput, speed);
     }
 
-    /**
-     * Shifts the gearboxes.
-     */
     public void setLowGear(boolean wantsLowGear) {
 
         // Shift to the desired state
@@ -125,23 +138,20 @@ public class Drivetrain extends Subsystem {
 
     }
 
-    public double getRightSpeed () {
-        return Math.abs(rightEncoder.getRate());
+    // Getter functions
+
+    /**
+     * @return The drivetrain's angle, measured by the NavX
+     */
+    public double getYaw () {
+        return mNavX.getYaw();
     }
-    public double getLeftSpeed () {
-        return Math.abs(leftEncoder.getRate());
-    }
-    public double getRightAccel () {
-        return Math.abs((getRightSpeed() - lastRightSpeed) / 0.2);
-    }
-    public double getLeftAccel () {
-        return Math.abs((getLeftSpeed() - lastLeftSpeed) / 0.2);
-    }
-    public double getRightJerk () {
-        return Math.abs((getRightAccel() - lastRightAccel) / 0.2);
-    }
-    public double getLeftJerk () {
-        return Math.abs((getLeftAccel() - lastLeftAccel) / 0.2);
+
+    /**
+     * @return Whether or not the robot is currently in low gear
+     */
+    public boolean isLowGear () {
+        return mIsLowGear;
     }
 
     /**
@@ -162,13 +172,16 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    // Reset functions
+
     /**
      * Zeroes all sensors.
+     */
     public void zeroSensors () {
 
-        rightEncoder.reset();
-        leftEncoder.reset();
-        // TODO: Zero NavX
+        mRightEncoder.reset();
+        mLeftEncoder.reset();
+        mNavX.zeroYaw();
 
     }
 
@@ -184,13 +197,32 @@ public class Drivetrain extends Subsystem {
         // Make sure shifters are where they should be
         setLowGear(true);
 
+        // Zero sensors
+        zeroSensors();
+
     }
 
-    // ----- Pathfinder methods -----
+    /**
+     * Resets the encoder followers to prepare to follow a path
+     */
+    public void resetFollowers () {
 
+        // Reset the followers
+        rightEncoderFollower.reset();
+        leftEncoderFollower.reset();
+
+        // Reset the sensors
+        zeroSensors();
+
+        // Reconfigure followers
+        configureFollowers();
+
+    }
+
+    // Pathfinder functions
     public void generatePath () {
 
-        /**
+        /*
          * Some notes:
          *
          * 1. We'll be using feet for units of length instead of meters. Jaci's documentation and example code of
@@ -232,7 +264,6 @@ public class Drivetrain extends Subsystem {
         Trajectory trajectory = Pathfinder.generate(centerToRightSwitchPoints, config);
 
         // Modify the trajectory for tank drive using the wheelbase width
-        // TODO: Fix bug where this modifier might tell one side to run faster than it actually can
         TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
 
         // Set the encoder followers
@@ -242,38 +273,11 @@ public class Drivetrain extends Subsystem {
         System.out.println("Done generating path!");
 
     }
-
-    public void configureFollowers () {
-
-        // Configure the encoders
-        rightEncoderFollower.configureEncoder(rightEncoder.getRaw(), encoderPulsesPerRev, Constants.kDriveWheelDiameter);
-        leftEncoderFollower .configureEncoder(leftEncoder.getRaw(),  encoderPulsesPerRev, Constants.kDriveWheelDiameter);
-
-        // Configure PIDVA
-        rightEncoderFollower.configurePIDVA(0.001, 0.0, 0.0, (1/maxVelocity), 0);
-        leftEncoderFollower .configurePIDVA(0.001, 0.0, 0.0, (1/maxVelocity), 0);
-
-    }
-
-    public void resetFollowers () {
-
-        // Reset the followers
-        rightEncoderFollower.reset();
-        leftEncoderFollower.reset();
-
-        // Reset the sensors
-        zeroSensors();
-
-        // Reconfigure followers
-        configureFollowers();
-
-    }
-
     public void followPath () {
 
         // Calculate desired motor output
-        double rightOutput = rightEncoderFollower.calculate(rightEncoder.getRaw());
-        double leftOutput  = leftEncoderFollower.calculate(leftEncoder.getRaw());
+        double rightOutput = rightEncoderFollower.calculate(mRightEncoder.getRaw());
+        double leftOutput  = leftEncoderFollower.calculate(mLeftEncoder.getRaw());
 
         // TODO: Add a control loop for angle
 

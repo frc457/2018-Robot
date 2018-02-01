@@ -26,11 +26,11 @@ public class OI {
         driverRB.whenPressed(new DriveShiftToHigh());
 
         // Testing Pathfinder
-        driverB.whenPressed(new DriveTestPathfinder());
+        driverB.whenPressed(new FollowPath());
         driverX.whenPressed(new GeneratePath());
 
         // Testing NavX
-        driverY.whenPressed(new DriveResetYaw());
+        driverY.whenPressed(new DriveZeroSensors());
 
     }
 

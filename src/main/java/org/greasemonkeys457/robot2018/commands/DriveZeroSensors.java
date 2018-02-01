@@ -3,14 +3,14 @@ package org.greasemonkeys457.robot2018.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.greasemonkeys457.robot2018.Robot;
 
-public class DriveResetYaw extends Command {
+public class DriveZeroSensors extends Command {
 
-    public DriveResetYaw () {
+    public DriveZeroSensors() {
         requires(Robot.drivetrain);
     }
 
     public void execute () {
-        Robot.drivetrain.navx.zeroYaw();
+        Robot.drivetrain.zeroSensors();
     }
 
     public boolean isFinished () {

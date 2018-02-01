@@ -3,9 +3,9 @@ package org.greasemonkeys457.robot2018.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.greasemonkeys457.robot2018.Robot;
 
-public class DriveTestPathfinder extends Command {
+public class FollowPath extends Command {
 
-    public DriveTestPathfinder () {
+    public FollowPath() {
 
         // This command uses the drivetrain, so...
         requires(Robot.drivetrain);
@@ -18,7 +18,7 @@ public class DriveTestPathfinder extends Command {
         Robot.drivetrain.resetFollowers();
 
         // Make sure the robot is in low gear
-        Robot.drivetrain.shiftToLow();
+        Robot.drivetrain.setLowGear(true);
 
     }
 
