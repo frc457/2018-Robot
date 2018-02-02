@@ -14,7 +14,6 @@ public class OI {
     public Button driverA  = new JoystickButton(driverController, 1);
     public Button driverB  = new JoystickButton(driverController, 2);
     public Button driverX  = new JoystickButton(driverController, 3);
-    public Button driverY  = new JoystickButton(driverController, 4);
     public Button driverLB = new JoystickButton(driverController, 5);
     public Button driverRB = new JoystickButton(driverController, 6);
 
@@ -28,9 +27,6 @@ public class OI {
         // Testing Pathfinder
         driverB.whenPressed(new FollowPath());
         driverX.whenPressed(new GeneratePath());
-
-        // Testing NavX
-        driverY.whenPressed(new DriveZeroSensors());
 
     }
 

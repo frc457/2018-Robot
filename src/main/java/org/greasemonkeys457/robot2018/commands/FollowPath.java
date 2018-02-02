@@ -17,6 +17,9 @@ public class FollowPath extends Command {
         // Reset the followers
         Robot.drivetrain.resetFollowers();
 
+        // Zero sensors
+        Robot.drivetrain.zeroSensors();
+
         // Make sure the robot is in low gear
         Robot.drivetrain.setLowGear(true);
 
