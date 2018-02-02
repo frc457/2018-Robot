@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -144,7 +145,7 @@ public class Drivetrain extends Subsystem {
      * @return The drivetrain's angle, measured by the NavX
      */
     public double getYaw () {
-        return mNavX.getYaw();
+        return -mNavX.getYaw();
     }
 
     /**
@@ -219,6 +220,19 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    // Helper functions
+
+    /**
+     * Keeps a variable between -1 and 1 for motor speed input.
+     * @param input The input
+     * @return The input, kept between -1 and 1
+     */
+    private double boundPercentage (double input) {
+        if (input < -1) input = -1;
+        if (input > 1) input = 1;
+        return input;
+    }
+
     // Pathfinder functions
     public void generatePath () {
 
@@ -242,7 +256,7 @@ public class Drivetrain extends Subsystem {
                 Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
                 Trajectory.Config.SAMPLES_HIGH,     // Sample count
                 0.02,                               // Time step
-                maxVelocity,                        // Max velocity
+                3.0,                                // Max velocity
                 maxAccel,                           // Max acceleration
                 maxJerk                             // Max jerk
         );
@@ -256,8 +270,9 @@ public class Drivetrain extends Subsystem {
         // Center to right switch
         Waypoint[] centerToRightSwitchPoints = new Waypoint[] {
                 new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((28.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((103.5/12.0), 9.0, 0.0),
+                new Waypoint((18.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((120/12.0), 9.0, 0.0),
+                new Waypoint((123/12.0), 9.0, 0.0),
         };
 
         // Generate a Trajectory
@@ -276,14 +291,19 @@ public class Drivetrain extends Subsystem {
     public void followPath () {
 
         // Calculate desired motor output
-        double rightOutput = rightEncoderFollower.calculate(mRightEncoder.getRaw());
-        double leftOutput  = leftEncoderFollower.calculate(mLeftEncoder.getRaw());
+        double rightOutput = boundPercentage(rightEncoderFollower.calculate(mRightEncoder.getRaw()));
+        double leftOutput = boundPercentage(leftEncoderFollower.calculate(mLeftEncoder.getRaw()));
 
-        // TODO: Add a control loop for angle
+        // Angle control
+        double actualAngle = getYaw();
+        double targetAngle = Pathfinder.boundHalfDegrees(Math.toDegrees(rightEncoderFollower.getHeading()));
+        double angleError = Pathfinder.boundHalfDegrees(targetAngle - actualAngle);
+
+        double turn = 0.8 * (-1.0/80.0) * angleError;
 
         // Set the motor speeds according to the calculated outputs
-        setRightSpeed(rightOutput);
-        setLeftSpeed(leftOutput);
+        setRightSpeed(rightOutput - turn);
+        setLeftSpeed(leftOutput + turn);
 
     }
 

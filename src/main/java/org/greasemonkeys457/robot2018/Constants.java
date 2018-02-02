@@ -10,6 +10,6 @@ public class Constants {
     // Pathfinder variables
     public static double kLowGearMaxVelocity = 6.0;
     public static double kLowGearMaxAccel = 8.0;
-    public static double kLowGearMaxJerk = 200.0;
+    public static double kLowGearMaxJerk = 10.0;
 
 }

@@ -49,10 +49,6 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-
-        // Report current angle
-        SmartDashboard.putNumber("Angle", drivetrain.getYaw());
-
     }
 
     public void testPeriodic() {}
