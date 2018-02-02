@@ -256,7 +256,7 @@ public class Drivetrain extends Subsystem {
                 Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
                 Trajectory.Config.SAMPLES_HIGH,     // Sample count
                 0.02,                               // Time step
-                3.0,                                // Max velocity
+                4.25,                               // Max velocity
                 maxAccel,                           // Max acceleration
                 maxJerk                             // Max jerk
         );
@@ -275,8 +275,23 @@ public class Drivetrain extends Subsystem {
                 new Waypoint((123/12.0), 9.0, 0.0),
         };
 
+        // Center to left switch
+        Waypoint[] centerToLeftSwitchPoints = new Waypoint[] {
+                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((18.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint((120/12.0), 18.0, 0.0),
+                new Waypoint((123/12.0), 18.0, 0.0),
+        };
+
+        // Center to right scale (will we even ever use this?)
+        Waypoint[] centerToRightScalePoints = new Waypoint[] {
+                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
+                new Waypoint(10.0, 6.0, Math.toRadians(-45)),
+                new Waypoint(27.0, 3.0, 0.0)
+        };
+
         // Generate a Trajectory
-        Trajectory trajectory = Pathfinder.generate(centerToRightSwitchPoints, config);
+        Trajectory trajectory = Pathfinder.generate(centerToRightScalePoints, config);
 
         // Modify the trajectory for tank drive using the wheelbase width
         TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
