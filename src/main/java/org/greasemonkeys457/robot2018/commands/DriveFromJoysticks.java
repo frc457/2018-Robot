@@ -5,39 +5,80 @@ import org.greasemonkeys457.robot2018.Robot;
 
 public class DriveFromJoysticks extends Command {
 
+    // Initial angle value
+    private double angle = 0.0;
+
     public DriveFromJoysticks () {
         requires(Robot.drivetrain);
     }
 
     protected void execute () {
 
-        // Get input from the driver's controller
-        double rightSpeed = -Robot.oi.driverController.getRawAxis(5);
-        double leftSpeed = -Robot.oi.driverController.getRawAxis(1);
-
-        // Triggers are used to drive straight backward / forward
+        // Input variables
+        double rightJoystick = -Robot.oi.driverController.getRawAxis(5);
+        double leftJoystick = -Robot.oi.driverController.getRawAxis(1);
         double rightTrigger = Robot.oi.driverController.getRawAxis(3);
         double leftTrigger = Robot.oi.driverController.getRawAxis(2);
 
-        // Straight forward using right trigger
-        if (Math.abs(rightTrigger) >= 0.01 ) {
-            rightSpeed = rightTrigger;
-            leftSpeed = rightTrigger;
+        // Output variables
+        double rightOutput;
+        double leftOutput;
+
+        // Decide the speed to be used
+        if (Math.abs(rightTrigger) >= 0.01) {
+
+            // Drive straight forward if the right trigger is being pressed
+            rightOutput = rightTrigger;
+            leftOutput = rightTrigger;
+
+        } else if (Math.abs(leftTrigger) >= 0.01) {
+
+            // Drive straight backwards if the left trigger is being pressed
+            rightOutput = -leftTrigger;
+            leftOutput = -leftTrigger;
+
+        } else {
+
+            // Drive using joysticks if neither of the triggers are being pressed
+            rightOutput = rightJoystick;
+            leftOutput = leftJoystick;
+
+            // Reset the angle if neither of them are being pressed
+            angle = 0.0;
+
         }
 
-        // Straight backward using left trigger
-        if (Math.abs(leftTrigger) >= 0.01 ) {
-            rightSpeed = -leftTrigger;
-            leftSpeed = -leftTrigger;
+        // Set the target angle if either of the triggers are being pressed
+        if (((Math.abs(rightTrigger) >= 0.01) || (Math.abs(leftTrigger) >= 0.01)) && (angle == 0.0)) {
+            angle = Robot.drivetrain.getYaw();
         }
 
         // Scale it accordingly
-        rightSpeed = Robot.drivetrain.driveScaling(rightSpeed);
-        leftSpeed = Robot.drivetrain.driveScaling(leftSpeed);
+        rightOutput = Robot.drivetrain.driveScaling(rightOutput);
+        leftOutput = Robot.drivetrain.driveScaling(leftOutput);
+
+        // Hold angle logic
+        double turn;
+
+        if (angle != 0.0) {
+
+            // Angle control PI loop
+            double error = -(angle - Robot.drivetrain.getYaw());
+
+            // Bound the value of the angle to -180, 180
+            while (error >= 180) error -= 360;
+            while (error < -180) error += 360;
+
+            // Turn calculation
+            turn = (2.0 * (1.0/80.0) * error);
+
+        } else {
+            turn = 0.0;
+        }
 
         // Set the speed
-        Robot.drivetrain.setRightSpeed(rightSpeed);
-        Robot.drivetrain.setLeftSpeed(leftSpeed);
+        Robot.drivetrain.setRightSpeed(rightOutput - turn);
+        Robot.drivetrain.setLeftSpeed(leftOutput + turn);
 
     }
 
