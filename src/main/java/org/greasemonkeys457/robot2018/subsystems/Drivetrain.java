@@ -234,75 +234,6 @@ public class Drivetrain extends Subsystem {
     }
 
     // Pathfinder functions
-    public void generatePath () {
-
-        /*
-         * Some notes:
-         *
-         * 1. We'll be using feet for units of length instead of meters. Jaci's documentation and example code of
-         *    Pathfinder uses meters; however, so long as you stay consistent with the unit, Pathfinder will work with
-         *    whatever unit you give it.
-         *
-         * 2. We'll try to document what our code is doing to the best of our ability. However, if you find yourself
-         *    stuck or confused, the Pathfinder examples and/or docs might help. Follow the link below to get there.
-         *
-         *    https://github.com/JacisNonsense/Pathfinder/tree/master/Pathfinder-Java
-         */
-
-        System.out.println("Generating path...");
-
-        // Trajectory configuration
-        Trajectory.Config config = new Trajectory.Config(
-                Trajectory.FitMethod.HERMITE_CUBIC, // Fit method used to generate the path
-                Trajectory.Config.SAMPLES_HIGH,     // Sample count
-                0.02,                               // Time step
-                4.25,                               // Max velocity
-                maxAccel,                           // Max acceleration
-                maxJerk                             // Max jerk
-        );
-
-        // Waypoints
-        Waypoint[] straightPoints = new Waypoint[] {
-                new Waypoint(0.0, 0.0, 0.0),
-                new Waypoint(7.0, 0.0, 0.0),
-        };
-
-        // Center to right switch
-        Waypoint[] centerToRightSwitchPoints = new Waypoint[] {
-                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((18.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((120/12.0), 9.0, 0.0),
-                new Waypoint((123/12.0), 9.0, 0.0),
-        };
-
-        // Center to left switch
-        Waypoint[] centerToLeftSwitchPoints = new Waypoint[] {
-                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((18.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((120/12.0), 18.0, 0.0),
-                new Waypoint((123/12.0), 18.0, 0.0),
-        };
-
-        // Center to right scale (will we even ever use this?)
-        Waypoint[] centerToRightScalePoints = new Waypoint[] {
-                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint(10.0, 6.0, Math.toRadians(-45)),
-                new Waypoint(27.0, 3.0, 0.0)
-        };
-
-        // Generate a Trajectory
-        Trajectory trajectory = Pathfinder.generate(centerToRightScalePoints, config);
-
-        // Modify the trajectory for tank drive using the wheelbase width
-        TankModifier modifier = new TankModifier(trajectory).modify((25.5/12.0));
-
-        // Set the encoder followers
-        rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
-        leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
-
-        System.out.println("Done generating path!");
-
-    }
     public void followPath () {
 
         // Calculate desired motor output
@@ -321,6 +252,31 @@ public class Drivetrain extends Subsystem {
         setLeftSpeed(leftOutput + turn);
 
     }
+    public void setPath (Waypoint[] points) {
+
+        // TODO: Path manager
+
+        // Generate the path
+        Trajectory trajectory = generatePath(points);
+
+        // Modify using the wheelbase
+        TankModifier modifier = new TankModifier(trajectory).modify(25.5/12.0);
+
+        // Set the encoder followers
+        rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
+        leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
+
+    }
+    private Trajectory generatePath (Waypoint[] points) {
+
+        // Trajectory configuration
+        Trajectory.Config config = Constants.pathfinderConfig;
+
+        // Generate and return a Trajectory
+        return Pathfinder.generate(points, config);
+
+    }
+
 
     public void initDefaultCommand () {
         setDefaultCommand(new DriveFromJoysticks());
