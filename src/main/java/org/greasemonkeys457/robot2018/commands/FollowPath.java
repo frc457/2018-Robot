@@ -1,6 +1,7 @@
 package org.greasemonkeys457.robot2018.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.Robot;
 
 public class FollowPath extends Command {
@@ -9,6 +10,16 @@ public class FollowPath extends Command {
 
         // This command uses the drivetrain, so...
         requires(Robot.drivetrain);
+
+    }
+
+    public FollowPath (Constants.Paths path) {
+
+        // This command uses the drivetrain, so...
+        requires(Robot.drivetrain);
+
+        // Set the path before we begin following it
+        Robot.drivetrain.setPath(path.points);
 
     }
 

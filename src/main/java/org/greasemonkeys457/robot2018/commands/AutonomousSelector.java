@@ -94,37 +94,47 @@ public class AutonomousSelector extends CommandGroup {
      */
     private void centerRoutines () {
 
+        // Cross the baseline
         if (this.goal == Goal.Baseline) {
 
-            // Smart baseline
-            if (MatchData.getOwnedSide(MatchData.GameFeature.SWITCH_NEAR) == MatchData.OwnedSide.LEFT) {
+            /*
+             * Note that these autonomous routines drive to the side of the switch that we don't own, but never place
+             * the cube. At first glance, it might seem like we're scoring for the opposing side. However, unless the
+             * cube falls out of the robot, that should never happen.
+             *
+             * If it does happen, we'll generate new paths that don't risk that. Until then, this will work fine.
+             */
+
+            if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
 
                 // Drive to the right side of the switch
-                Robot.drivetrain.setPath(Constants.Paths.centerToRightSwitch.points);
+                addSequential(new FollowPath(Constants.Paths.centerToRightSwitch));
 
-            } else {
+            }
+
+            if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
 
                 // Drive to the left side of the switch
-                Robot.drivetrain.setPath(Constants.Paths.centerToLeftSwitch.points);
+                addSequential(new FollowPath(Constants.Paths.centerToLeftSwitch));
 
             }
 
         }
 
+        // Place a cube in the switch
         if (this.goal == Goal.Switch) {
 
-            // Place in switch
-            if (MatchData.getOwnedSide(MatchData.GameFeature.SWITCH_NEAR) == MatchData.OwnedSide.LEFT) {
+            if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
 
                 // Drive to the left side of the switch
-                Robot.drivetrain.setPath(Constants.Paths.centerToLeftSwitch.points);
+                addSequential(new FollowPath(Constants.Paths.centerToLeftSwitch));
 
                 // TODO: Place cube
 
-            } else if (MatchData.getOwnedSide(MatchData.GameFeature.SWITCH_NEAR) == MatchData.OwnedSide.RIGHT){
+            } else if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT){
 
                 // Drive to the right side of the switch
-                Robot.drivetrain.setPath(Constants.Paths.centerToRightSwitch.points);
+                addSequential(new FollowPath(Constants.Paths.centerToRightSwitch));
 
                 // TODO: Place cube
 
@@ -158,4 +168,8 @@ public class AutonomousSelector extends CommandGroup {
 
     }
 
+    // Helper functions
+    private MatchData.OwnedSide ownedSwitchSide () {
+        return MatchData.getOwnedSide(MatchData.GameFeature.SWITCH_NEAR);
+    }
 }
