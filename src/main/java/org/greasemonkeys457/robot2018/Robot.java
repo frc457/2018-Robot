@@ -33,12 +33,14 @@ public class Robot extends IterativeRobot {
 
         // Starting position chooser
         stposChooser = new SendableChooser<>();
+        stposChooser.setName("Starting Position:");
         stposChooser.addDefault("Left", StartingPosition.Left);
         stposChooser.addObject("Center", StartingPosition.Center);
         stposChooser.addObject("Right", StartingPosition.Right);
 
         // Goal chooser
         goalChooser = new SendableChooser<>();
+        goalChooser.setName("Goal:");
         goalChooser.addDefault("Nothing", Goal.Nothing);
         goalChooser.addObject("Baseline", Goal.Baseline);
         goalChooser.addObject("Switch", Goal.Switch);
