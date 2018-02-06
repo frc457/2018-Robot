@@ -67,6 +67,34 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    // Drive functions
+
+    /**
+     * Function to control tank drive.
+     * @param rightRawInput Right joystick y-axis, assuming positive means forward
+     * @param leftRawInput Left joystick y-axis, assuming positive means forward
+     */
+    public void tankDrive (double rightRawInput, double leftRawInput) {
+
+        // Scale the input accordingly
+        double rightScaledInput = driveScaling(rightRawInput);
+        double leftScaledInput = driveScaling(leftRawInput);
+
+        // Set the speed
+        setRightSpeed(rightScaledInput);
+        setLeftSpeed(leftScaledInput);
+
+    }
+
+    /**
+     * Method to control arcade drive.
+     * @param yRawInput The y-axis of a joystick, assuming positive means forward
+     * @param xRawInput The x-axis of a joystick, used to control rotation. Positive means counterclockwise
+     */
+    public void arcadeDrive (double yRawInput, double xRawInput) {
+        // TODO: Implement arcade drive
+    }
+
     // Configuration functions
 
     private void configureTalons () {

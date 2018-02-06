@@ -20,65 +20,56 @@ public class DriveFromJoysticks extends Command {
         double rightTrigger = Robot.oi.driverController.getRawAxis(3);
         double leftTrigger = Robot.oi.driverController.getRawAxis(2);
 
-        // Output variables
-        double rightOutput;
-        double leftOutput;
-
         // Decide the speed to be used
         if (Math.abs(rightTrigger) >= 0.01) {
 
             // Drive straight forward if the right trigger is being pressed
-            rightOutput = rightTrigger;
-            leftOutput = rightTrigger;
+            handleStraightDrive(rightTrigger);
 
         } else if (Math.abs(leftTrigger) >= 0.01) {
 
             // Drive straight backwards if the left trigger is being pressed
-            rightOutput = -leftTrigger;
-            leftOutput = -leftTrigger;
+            handleStraightDrive(-leftTrigger);
 
         } else {
 
             // Drive using joysticks if neither of the triggers are being pressed
-            rightOutput = rightJoystick;
-            leftOutput = leftJoystick;
-
-            // Reset the angle if neither of them are being pressed
-            angle = 0.0;
+            handleTankDrive(rightJoystick, leftJoystick);
 
         }
 
-        // Set the target angle if either of the triggers are being pressed
-        if (((Math.abs(rightTrigger) >= 0.01) || (Math.abs(leftTrigger) >= 0.01)) && (angle == 0.0)) {
+    }
+
+    private void handleTankDrive (double rightInput, double leftInput) {
+
+        // Use the drivetrain's tankDrive method to control tank drive
+        Robot.drivetrain.tankDrive(rightInput, leftInput);
+
+        // Reset the angle for straight drive
+        angle = 0.0;
+
+    }
+
+    private void handleStraightDrive (double speed) {
+
+        // Set the angle to hold if it hasn't been set already
+        if (angle == 0.0) {
             angle = Robot.drivetrain.getYaw();
         }
 
-        // Scale it accordingly
-        rightOutput = Robot.drivetrain.driveScaling(rightOutput);
-        leftOutput = Robot.drivetrain.driveScaling(leftOutput);
+        // Angle control P loop
+        double error = -(angle - Robot.drivetrain.getYaw());
 
-        // Hold angle logic
-        double turn;
+        // Bound the value of the angle to -180, 180
+        while (error >= 180) error -= 360;
+        while (error < -180) error += 360;
 
-        if (angle != 0.0) {
+        // Turn calculation
+        double turn = (2.0 * (1.0/80.0) * error);
 
-            // Angle control PI loop
-            double error = -(angle - Robot.drivetrain.getYaw());
-
-            // Bound the value of the angle to -180, 180
-            while (error >= 180) error -= 360;
-            while (error < -180) error += 360;
-
-            // Turn calculation
-            turn = (2.0 * (1.0/80.0) * error);
-
-        } else {
-            turn = 0.0;
-        }
-
-        // Set the speed
-        Robot.drivetrain.setRightSpeed(rightOutput - turn);
-        Robot.drivetrain.setLeftSpeed(leftOutput + turn);
+        // Set the speed for each side
+        Robot.drivetrain.setRightSpeed(speed - turn);
+        Robot.drivetrain.setLeftSpeed(speed + turn);
 
     }
 
