@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -31,8 +30,6 @@ public class Drivetrain extends Subsystem {
     // Constants
     private int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
     private double maxVelocity = Constants.kLowGearMaxVelocity;
-    private double maxAccel = Constants.kLowGearMaxAccel;
-    private double maxJerk = Constants.kLowGearMaxJerk;
     private double wheelDiameter = Constants.kDriveWheelDiameter;
 
     // Pathfinder variables
@@ -81,8 +78,6 @@ public class Drivetrain extends Subsystem {
         // Set followers
         mRightFollower.follow(mRightMaster);
         mLeftFollower.follow(mLeftMaster);
-
-        // TODO: Limit voltage outputs
 
     }
 
