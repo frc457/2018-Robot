@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import openrio.powerup.MatchData;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.Robot;
+import org.greasemonkeys457.robot2018.util.paths.CenterToLeftSwitch;
+import org.greasemonkeys457.robot2018.util.paths.CenterToRightSwitch;
 
 public class AutonomousSelector extends CommandGroup {
 
@@ -108,14 +110,14 @@ public class AutonomousSelector extends CommandGroup {
             if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
 
                 // Drive to the right side of the switch
-                addSequential(new FollowPath(Constants.Paths.centerToRightSwitch));
+                addSequential(new FollowPath(new CenterToRightSwitch()));
 
             }
 
             if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
 
                 // Drive to the left side of the switch
-                addSequential(new FollowPath(Constants.Paths.centerToLeftSwitch));
+                addSequential(new FollowPath(new CenterToLeftSwitch()));
 
             }
 
@@ -127,14 +129,14 @@ public class AutonomousSelector extends CommandGroup {
             if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
 
                 // Drive to the left side of the switch
-                addSequential(new FollowPath(Constants.Paths.centerToLeftSwitch));
+                addSequential(new FollowPath(new CenterToLeftSwitch()));
 
                 // TODO: Place cube
 
             } else if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT){
 
                 // Drive to the right side of the switch
-                addSequential(new FollowPath(Constants.Paths.centerToRightSwitch));
+                addSequential(new FollowPath(new CenterToRightSwitch()));
 
                 // TODO: Place cube
 

@@ -26,29 +26,4 @@ public class Constants {
             kLowGearMaxJerk                     // Max jerk
     );
 
-    // Paths
-    public enum Paths {
-
-        centerToRightSwitch(new Waypoint[] {
-                new Waypoint((kRobotLength / 2.0), (14.5 - (kRobotWidth / 2.0)), 0.0),
-                new Waypoint(((2.0/12.0) + (kRobotLength / 2.0)), (14.5 - (kRobotWidth / 2.0)), 0.0),
-                new Waypoint((10 - (2.0/12.0) - (kRobotLength / 2.0)), 9.0, 0.0),
-                new Waypoint((10 - (kRobotLength / 2.0)), 9.0, 0.0),
-        }),
-
-        centerToLeftSwitch(new Waypoint[] {
-                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((18.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((120/12.0), 18.0, 0.0),
-                new Waypoint((123/12.0), 18.0, 0.0),
-        });
-
-        public Waypoint[] points;
-
-        Paths (Waypoint[] points) {
-            this.points = points;
-        }
-
-    }
-
 }

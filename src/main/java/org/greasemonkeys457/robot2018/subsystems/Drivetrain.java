@@ -15,6 +15,7 @@ import jaci.pathfinder.modifiers.TankModifier;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.DriveFromJoysticks;
+import org.greasemonkeys457.robot2018.util.paths.Path;
 
 public class Drivetrain extends Subsystem {
 
@@ -282,12 +283,12 @@ public class Drivetrain extends Subsystem {
         setLeftSpeed(leftOutput + turn);
 
     }
-    public void setPath (Waypoint[] points) {
+    public void setPath (Path path) {
 
         // TODO: Path manager
 
         // Generate the path
-        Trajectory trajectory = generatePath(points);
+        Trajectory trajectory = path.getTrajectory();
 
         // Modify using the wheelbase
         TankModifier modifier = new TankModifier(trajectory).modify(25.5/12.0);
@@ -295,15 +296,6 @@ public class Drivetrain extends Subsystem {
         // Set the encoder followers
         rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
         leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
-
-    }
-    private Trajectory generatePath (Waypoint[] points) {
-
-        // Trajectory configuration
-        Trajectory.Config config = Constants.pathfinderConfig;
-
-        // Generate and return a Trajectory
-        return Pathfinder.generate(points, config);
 
     }
 
