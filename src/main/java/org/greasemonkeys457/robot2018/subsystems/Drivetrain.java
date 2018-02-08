@@ -30,7 +30,7 @@ public class Drivetrain extends Subsystem {
     // Constants
     private int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
     private double maxVelocity = Constants.kLowGearMaxVelocity;
-    private double wheelDiameter = Constants.kDriveWheelDiameter;
+    private double kWheelDiameter = Constants.kDriveWheelDiameter;
 
     // Pathfinder variables
     public EncoderFollower rightEncoderFollower;
@@ -112,8 +112,8 @@ public class Drivetrain extends Subsystem {
     private void configureEncoders () {
 
         // Set distance per pulse
-        mRightEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
-        mLeftEncoder.setDistancePerPulse((wheelDiameter * Math.PI) / encoderPulsesPerRev);
+        mRightEncoder.setDistancePerPulse((kWheelDiameter * Math.PI) / encoderPulsesPerRev);
+        mLeftEncoder.setDistancePerPulse((kWheelDiameter * Math.PI) / encoderPulsesPerRev);
 
         // Invert one side
         mLeftEncoder.setReverseDirection(true);
@@ -130,8 +130,8 @@ public class Drivetrain extends Subsystem {
         double kA = 0;
 
         // Configure the encoders
-        rightEncoderFollower.configureEncoder(mRightEncoder.getRaw(), encoderPulsesPerRev, Constants.kDriveWheelDiameter);
-        leftEncoderFollower.configureEncoder(mLeftEncoder.getRaw(),  encoderPulsesPerRev, Constants.kDriveWheelDiameter);
+        rightEncoderFollower.configureEncoder(mRightEncoder.getRaw(), encoderPulsesPerRev, kWheelDiameter);
+        leftEncoderFollower.configureEncoder(mLeftEncoder.getRaw(), encoderPulsesPerRev, kWheelDiameter);
 
         // Configure PIDVA
         rightEncoderFollower.configurePIDVA(kP, kI, kD, kV, kA);
@@ -194,6 +194,13 @@ public class Drivetrain extends Subsystem {
 
         return speed;
 
+    }
+
+    public double getRightVelocity () {
+        return mRightEncoder.getRate();
+    }
+    public double getLeftVelocity () {
+        return mLeftEncoder.getRate();
     }
 
     // Reset functions

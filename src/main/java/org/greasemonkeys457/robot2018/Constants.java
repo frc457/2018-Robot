@@ -7,11 +7,14 @@ public class Constants {
 
     // Drive
     public static double kDriveScale = 1.0;
-    public static double kDriveWheelDiameter = 4.0 / 12.0; // in feet
+    public static double kDriveWheelDiameter = 6.0 / 12.0; // in feet
     public static int kEncoderPulsesPerRev = 64;
+    public static double kWheelbaseWidth = 23.5 / 12.0;
+    public static double kRobotWidth = 27.5 / 12.0;
+    public static double kRobotLength = 32.5 / 12.0;
 
     // Pathfinder variables
-    public static double kLowGearMaxVelocity = 6.0;
+    public static double kLowGearMaxVelocity = 8.4;
     public static double kLowGearMaxAccel = 8.0;
     public static double kLowGearMaxJerk = 10.0;
     public static Trajectory.Config pathfinderConfig = new Trajectory.Config(
@@ -27,10 +30,10 @@ public class Constants {
     public enum Paths {
 
         centerToRightSwitch(new Waypoint[] {
-                new Waypoint((16.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((18.5/12.0), (159.5/12.0), 0.0),
-                new Waypoint((120/12.0), 9.0, 0.0),
-                new Waypoint((123/12.0), 9.0, 0.0),
+                new Waypoint((kRobotLength / 2.0), (14.5 - (kRobotWidth / 2.0)), 0.0),
+                new Waypoint(((2.0/12.0) + (kRobotLength / 2.0)), (14.5 - (kRobotWidth / 2.0)), 0.0),
+                new Waypoint((10 - (2.0/12.0) - (kRobotLength / 2.0)), 9.0, 0.0),
+                new Waypoint((10 - (kRobotLength / 2.0)), 9.0, 0.0),
         }),
 
         centerToLeftSwitch(new Waypoint[] {
