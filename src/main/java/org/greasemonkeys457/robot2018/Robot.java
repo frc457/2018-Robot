@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jaci.pathfinder.Trajectory;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.StartingPosition;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.Goal;
@@ -113,6 +114,16 @@ public class Robot extends IterativeRobot {
             System.out.println("Generating path...");
             path.generateTrajectory();
             System.out.println("Done generating path!");
+            System.out.println("--------------------------------------------------");
+            System.out.println("Printing trajectory...");
+            System.out.println("--------------------------------------------------");
+            System.out.println("Time step: " + path.trajectory.segments[0].dt);
+            for (Trajectory.Segment segment : path.trajectory.segments) {
+                System.out.println(segment.x + "," + segment.y + "," + segment.position + "," + segment.velocity + "," +
+                        segment.acceleration + "," + segment.jerk + "," + segment.heading + "," + );
+            }
+            System.out.println("--------------------------------------------------");
+            System.out.println("Done printing trajectory!");
             System.out.println("--------------------------------------------------");
         } else ap = false;
 

@@ -13,7 +13,7 @@ public abstract class Path {
     // Pathfinder variables
     private Waypoint[] points;
     private Trajectory.Config config;
-    private Trajectory trajectory;
+    public Trajectory trajectory;
 
     // Variables used to handle writing to and reading from files
     private String name;
