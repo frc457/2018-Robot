@@ -120,7 +120,7 @@ public abstract class Path {
 
     }
 
-    private boolean doesCacheExist () throws IOException {
+    private boolean doesCacheExist () {
 
         // TODO: Split this function into smaller functions for testing and readability
 
@@ -186,6 +186,8 @@ public abstract class Path {
             readPoints = rPoints.toArray(new Waypoint[rPoints.size()]);
 
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
