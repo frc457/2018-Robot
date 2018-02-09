@@ -7,6 +7,9 @@ public class CenterToLeftSwitch extends Path {
 
     public CenterToLeftSwitch () {
 
+        // Set the name of this path
+        setName("CenterToLeftSwitch");
+
         double halfBotLen = Constants.kRobotLength / 2.0;
         double halfBotWid = Constants.kRobotWidth / 2.0;
 
