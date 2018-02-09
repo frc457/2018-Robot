@@ -20,6 +20,11 @@ public abstract class Path {
     private File fConfig;
     private File fTrajectory;
 
+    // Variables loaded from save file if save file exists
+    private Waypoint[] loadedPoints;
+    private Trajectory.Config loadedConfig;
+    private Trajectory loadedTrajectory;
+
     public Path () {
         // Do... something?
     }
@@ -50,18 +55,15 @@ public abstract class Path {
 
     }
 
-    private void generateTrajectory () {
+    public void generateTrajectory () {
 
-        if (points != null) {
+        if (points.length >= 2) {
 
             // Grab the trajectory configuration from Constants
             config = Constants.pathfinderConfig;
 
             // Generate the trajectory
             trajectory = Pathfinder.generate(points, config);
-
-            // TODO: Save the generated trajectory to a file
-            savePath();
 
         }
 
@@ -75,7 +77,9 @@ public abstract class Path {
         fTrajectory = new File("/home/lvuser/paths/" + name + "/trajectory.txt");
     }
 
-    private void savePath () {
+    public void savePath () {
+
+        // TODO: Test that this works properly
 
         // Set the paths of the files
         setFiles();
@@ -120,15 +124,12 @@ public abstract class Path {
 
     }
 
-    private boolean doesCacheExist () {
+    public void loadSave () {
 
-        // TODO: Split this function into smaller functions for testing and readability
+        // TODO: Test that this works properly
 
-        // Set the paths of the files
+        // Make sure the file paths are properly set
         setFiles();
-
-        // Check to see if the files exist
-        if (!fConfig.exists() || !fTrajectory.exists()) return false;
 
         // Read the config file
         Trajectory.Config readConfig = new Trajectory.Config(null,0,0,0,0,0);
@@ -148,12 +149,16 @@ public abstract class Path {
 
             // Parse the read values
             Trajectory.FitMethod aFitMethod;
-            if (rFitMethod.equals("Cubic")) {
-                aFitMethod = Trajectory.FitMethod.HERMITE_CUBIC;
-            } else if (rFitMethod.equals("Quintic")) {
-                aFitMethod = Trajectory.FitMethod.HERMITE_QUINTIC;
-            } else {
-                aFitMethod = null;
+            switch (rFitMethod) {
+                case "Cubic":
+                    aFitMethod = Trajectory.FitMethod.HERMITE_CUBIC;
+                    break;
+                case "Quintic":
+                    aFitMethod = Trajectory.FitMethod.HERMITE_QUINTIC;
+                    break;
+                default:
+                    aFitMethod = null;
+                    break;
             }
             int aSampleCount = Integer.parseInt(rSampleCount);
             double aTimestep = Double.parseDouble(rTimestep);
@@ -185,27 +190,30 @@ public abstract class Path {
             // Convert from ArrayList to Array
             readPoints = rPoints.toArray(new Waypoint[rPoints.size()]);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (readConfig == config) {
-            System.out.println("yo the configs match!");
-        } else {
-            System.out.println("yo the configs dont match!");
-        }
+        // Set the loaded configuration and points
+        loadedConfig = readConfig;
+        loadedPoints = readPoints;
 
-        if (readPoints == points) {
-            System.out.println("yo the waypoints match!");
-        } else {
-            System.out.println("yo the points dont match!");
-        }
+    }
 
-        // TODO: Finish this
+    public void validateLoadedSave () {
 
-        return false;
+        // TODO: Validate the loaded save
+
+    }
+
+    private boolean doesCacheExist () {
+
+        // Make sure the file paths are properly set
+        setFiles();
+
+        // Returns true if and only if all save files for this path exists
+        // Note that this only checks for existence; this does not read or validate the files
+        return fConfig.exists() && fTrajectory.exists();
 
     }
 
