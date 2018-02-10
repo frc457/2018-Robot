@@ -5,13 +5,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import jaci.pathfinder.Trajectory;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.StartingPosition;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.Goal;
 import org.greasemonkeys457.robot2018.subsystems.Drivetrain;
-import org.greasemonkeys457.robot2018.util.paths.CenterToRightSwitch;
-import org.greasemonkeys457.robot2018.util.paths.Path;
 
 public class Robot extends IterativeRobot {
 
@@ -20,9 +17,6 @@ public class Robot extends IterativeRobot {
 
     // OI
     public static OI oi;
-
-    // TODO Remove test code
-    Path path = new CenterToRightSwitch();
 
     // Autonomous chooser
     SendableChooser<Command> chooser;
@@ -91,70 +85,7 @@ public class Robot extends IterativeRobot {
         Scheduler.getInstance().run();
     }
 
-    public void testPeriodic() {
-
-        // TODO: Remove test code
-        System.out.println("--------------------------------------------------");
-        System.out.println("Robot is in test mode!");
-        System.out.println("Press one of the buttons to perform one of the actions:");
-        System.out.println("A. Generate a path");
-        System.out.println("B. Save a path");
-        System.out.println("X. Load a path");
-        System.out.println("Y. Validate a path");
-        System.out.println("--------------------------------------------------");
-
-        boolean ap = false;
-        boolean bp = false;
-        boolean xp = false;
-        boolean yp = false;
-
-        // A button
-        if (oi.driverA.get() && !ap) {
-            ap = true;
-            System.out.println("Generating path...");
-            path.generateTrajectory();
-            System.out.println("Done generating path!");
-            System.out.println("--------------------------------------------------");
-            System.out.println("Printing trajectory...");
-            System.out.println("--------------------------------------------------");
-            System.out.println("Time step: " + path.trajectory.segments[0].dt);
-            for (Trajectory.Segment segment : path.trajectory.segments) {
-                System.out.println(segment.x + "," + segment.y + "," + segment.position + "," + segment.velocity + "," +
-                        segment.acceleration + "," + segment.jerk + "," + segment.heading + "," + );
-            }
-            System.out.println("--------------------------------------------------");
-            System.out.println("Done printing trajectory!");
-            System.out.println("--------------------------------------------------");
-        } else ap = false;
-
-        // B button
-        if (oi.driverB.get() && !bp) {
-            bp = true;
-            System.out.println("Saving path...");
-            path.savePath();
-            System.out.println("Done saving path!");
-            System.out.println("--------------------------------------------------");
-        } else bp = false;
-
-        // X button
-        if (oi.driverX.get() && !xp) {
-            xp = true;
-            System.out.println("Loading save...");
-            path.loadSave();
-            System.out.println("Save loaded!");
-            System.out.println("--------------------------------------------------");
-        } else xp = false;
-
-        // Y button
-        if (oi.driverY.get() && !yp) {
-            yp = true;
-            System.out.println("Validating path...");
-            path.validateLoadedSave();
-            System.out.println("Path validation done!");
-            System.out.println("--------------------------------------------------");
-        }
-
-    }
+    public void testPeriodic() {}
 
 
     // Reset all subsystems
