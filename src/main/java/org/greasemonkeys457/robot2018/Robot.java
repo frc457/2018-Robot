@@ -22,6 +22,9 @@ public class Robot extends IterativeRobot {
     private SendableChooser<StartingPosition> stposChooser;
     private SendableChooser<Goal> goalChooser;
 
+    // Autonomous command
+    Command autoCommand;
+
     public void robotInit() {
 
         // Define subsystems
@@ -53,6 +56,7 @@ public class Robot extends IterativeRobot {
 
     public void disabledInit() {
         reset();
+        if (autoCommand != null) autoCommand.cancel();
     }
 
     public void autonomousInit() {
@@ -62,7 +66,7 @@ public class Robot extends IterativeRobot {
         Goal goal = goalChooser.getSelected();
 
         // Use the selected st. pos. and goal to select an autonomous routine
-        Command autoCommand = new AutonomousSelector(startingPosition, goal);
+        autoCommand = new AutonomousSelector(startingPosition, goal);
 
         // Start the autonomous routine
         autoCommand.start();
@@ -71,7 +75,19 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {}
 
-    public void testInit() {}
+    public void testInit() {
+
+        // Generate paths if needed
+        Constants.centerToRightSwitch.generatePathIfNeeded(true);
+        Constants.centerToLeftSwitch.generatePathIfNeeded(true);
+        Constants.leftToLeftSwitch.generatePathIfNeeded(true);
+        Constants.leftCrossBaseline.generatePathIfNeeded(true);
+        Constants.leftToLeftScale.generatePathIfNeeded(true);
+        Constants.rightToRightSwitch.generatePathIfNeeded(true);
+        Constants.rightCrossBaseline.generatePathIfNeeded(true);
+        Constants.rightToRightScale.generatePathIfNeeded(true);
+
+    }
 
 
     public void disabledPeriodic() {}

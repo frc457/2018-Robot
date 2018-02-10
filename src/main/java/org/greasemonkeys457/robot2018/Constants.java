@@ -1,6 +1,7 @@
 package org.greasemonkeys457.robot2018;
 
 import jaci.pathfinder.Trajectory;
+import org.greasemonkeys457.robot2018.util.paths.*;
 
 public class Constants {
 
@@ -24,5 +25,15 @@ public class Constants {
             kLowGearMaxAccel,                   // Max acceleration
             kLowGearMaxJerk                     // Max jerk
     );
+
+    // Paths
+    public static Path centerToRightSwitch = new CenterToRightSwitch();
+    public static Path centerToLeftSwitch  = new CenterToLeftSwitch();
+    public static Path leftToLeftSwitch    = new LeftToLeftSwitch();
+    public static Path leftCrossBaseline   = new LeftCrossBaseline();
+    public static Path leftToLeftScale     = new LeftToLeftScale();
+    public static Path rightToRightSwitch  = new RightToRightSwitch();
+    public static Path rightCrossBaseline  = new RightCrossBaseline();
+    public static Path rightToRightScale   = new RightToRightScale();
 
 }

@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import openrio.powerup.MatchData;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.Robot;
-import org.greasemonkeys457.robot2018.util.paths.CenterToLeftSwitch;
-import org.greasemonkeys457.robot2018.util.paths.CenterToRightSwitch;
 
 public class AutonomousSelector extends CommandGroup {
 
@@ -87,18 +85,41 @@ public class AutonomousSelector extends CommandGroup {
 
         // Left-side baseline auto
         if (this.goal == Goal.Baseline) {
-            // TODO: Generate a path to cross the baseline
+
+            // Drive past the baseline
+            addSequential(new FollowPath(Constants.leftCrossBaseline));
+
         }
 
         // Left-side switch auto
         if (this.goal == Goal.Switch) {
-            // TODO: Add logic to recognize if the left side of the switch belongs to us
-            // TODO: Generate a path to place a cube in the switch
+
+            if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
+
+                // Drive to the side of the left switch
+                addSequential(new FollowPath(Constants.leftToLeftSwitch));
+
+                // TODO: Place a cube
+
+            }
+
+            // TODO: Figure out what to do if we don't own the left switch
+
         }
 
         if (this.goal == Goal.Scale) {
-            // TODO: Add logic to recognize if the left side of the scale belongs to us
-            // TODO: Generate a path to place a cube in the scale
+
+            if (ownedScaleSide() == MatchData.OwnedSide.LEFT) {
+
+                // Drive to the left scale
+                addSequential(new FollowPath(Constants.leftToLeftScale));
+
+                // TODO: Place a cube
+
+            }
+
+            // TODO: Figure out what to do if we don't own the left scale
+
         }
 
     }
@@ -122,14 +143,14 @@ public class AutonomousSelector extends CommandGroup {
             if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
 
                 // Drive to the right side of the switch
-                addSequential(new FollowPath(new CenterToRightSwitch()));
+                addSequential(new FollowPath(Constants.centerToRightSwitch));
 
             }
 
             if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
 
                 // Drive to the left side of the switch
-                addSequential(new FollowPath(new CenterToLeftSwitch()));
+                addSequential(new FollowPath(Constants.centerToLeftSwitch));
 
             }
 
@@ -141,14 +162,14 @@ public class AutonomousSelector extends CommandGroup {
             if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
 
                 // Drive to the left side of the switch
-                addSequential(new FollowPath(new CenterToLeftSwitch()));
+                addSequential(new FollowPath(Constants.centerToLeftSwitch));
 
                 // TODO: Place cube
 
             } else if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT){
 
                 // Drive to the right side of the switch
-                addSequential(new FollowPath(new CenterToRightSwitch()));
+                addSequential(new FollowPath(Constants.centerToRightSwitch));
 
                 // TODO: Place cube
 
@@ -167,17 +188,41 @@ public class AutonomousSelector extends CommandGroup {
 
         // Right-side baseline auto
         if (this.goal == Goal.Baseline) {
-            // TODO: Generate a path to cross the baseline
+
+            // Drive past the baseline
+            addSequential(new FollowPath(Constants.rightCrossBaseline));
+
         }
 
-        // Left-side switch auto
+        // Right-side switch auto
         if (this.goal == Goal.Switch) {
-            // TODO: Add logic to recognize if we own the right side of the switch
-            // TODO: Generate a path from the right stpos to the right switch
+
+            if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
+
+                // Drive to the side of the right switch
+                addSequential(new FollowPath(Constants.rightToRightSwitch));
+
+                // TODO: Place a cube
+
+            }
+
+            // TODO: Figure out what to do if we don't own the right switch
+
         }
 
         if (this.goal == Goal.Scale) {
-            // TODO: Right stpos to right scale auto
+
+            if (ownedScaleSide() == MatchData.OwnedSide.RIGHT) {
+
+                // Drive to the corner of the right scale
+                addSequential(new FollowPath(Constants.rightToRightScale));
+
+                // TODO: Place a cube
+
+            }
+
+            // TODO: Figure out what to do if we don't own the right scale
+
         }
 
     }
@@ -186,4 +231,8 @@ public class AutonomousSelector extends CommandGroup {
     private MatchData.OwnedSide ownedSwitchSide () {
         return MatchData.getOwnedSide(MatchData.GameFeature.SWITCH_NEAR);
     }
+    private MatchData.OwnedSide ownedScaleSide () {
+        return MatchData.getOwnedSide(MatchData.GameFeature.SCALE);
+    }
+
 }
