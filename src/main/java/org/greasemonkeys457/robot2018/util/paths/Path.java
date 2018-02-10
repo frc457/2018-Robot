@@ -124,6 +124,37 @@ public abstract class Path {
         return trajectory;
     }
 
+    public void generatePathIfNeeded (boolean printErrors) {
+
+        if (printErrors) System.out.println("Starting with path " + name + "...");
+
+        if (!doesSaveExist() && !generated) {
+            if (printErrors) System.out.println("Save files don't exist!");
+            generateAndSavePath();
+        } else {
+
+            loadSave();
+
+            if (!validateLoadedSave() && !generated) {
+                if (printErrors) System.out.println("Loaded save files failed validation!");
+                generateAndSavePath();
+            }
+
+        }
+
+        if (printErrors) System.out.println("Done with path " + name + ".");
+
+    }
+
+    public void generatePathIfNeeded () {
+        generatePathIfNeeded(false);
+    }
+
+    public void generateAndSavePath () {
+        generateTrajectory();
+        savePath();
+    }
+
     // Writing functions
 
     public void savePath () {
@@ -328,13 +359,8 @@ public abstract class Path {
 
         try {
 
-            // Paths folder
-            if (!fConfig.getParentFile().getParentFile().exists())
-                fConfig.getParentFile().getParentFile().createNewFile();
-
-            // Folder for this specific path
-            if (!fConfig.getParentFile().exists())
-                fConfig.getParentFile().createNewFile();
+            // Containing folders
+            fConfig.getParentFile().mkdirs();
 
             // Config and points file
             if (!fConfig.exists())
