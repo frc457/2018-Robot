@@ -1,5 +1,6 @@
 package org.greasemonkeys457.robot2018.util.paths;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -12,7 +13,7 @@ public abstract class Path {
     // Pathfinder variables
     private Waypoint[] points;
     private Trajectory.Config config;
-    public Trajectory trajectory;
+    private Trajectory trajectory;
 
     // Variables used to handle writing to and reading from files
     private String name;
@@ -28,9 +29,9 @@ public abstract class Path {
     private boolean loaded = false;
     private boolean generated = false;
 
-    public Path () {
-        // Do... something?
-    }
+    public Path () {}
+
+    // Setter functions
 
     void setConfig (Trajectory.Config config) {
         this.config = config;
@@ -43,6 +44,8 @@ public abstract class Path {
     void setName (String name) {
         this.name = name;
     }
+
+    // Getter functions
 
     public Waypoint[] getPoints() {
         return points;
@@ -68,6 +71,37 @@ public abstract class Path {
 
     }
 
+    public Trajectory getGeneratedTrajectory () {
+
+        if (!generated) {
+            DriverStation.reportWarning("Tried to get a trajectory that hasn't been generated yet!", true);
+            return null;
+        } else {
+            return trajectory;
+        }
+
+    }
+
+    public Trajectory getLoadedTrajectory() {
+
+        if (!loaded) {
+            DriverStation.reportWarning("Tried to get a trajectory that hasn't been loaded yet!", true);
+            return null;
+        } else {
+            return loadedTrajectory;
+        }
+
+    }
+
+    public Trajectory loadAndGetTrajectory () {
+
+        loadSave();
+        return getLoadedTrajectory();
+
+    }
+
+    // Trajectory generation
+
     public void generateTrajectory () {
 
         if (points.length >= 2) {
@@ -80,57 +114,19 @@ public abstract class Path {
         // If there aren't enough waypoints set...
         else trajectory = null;
 
-    }
-
-    private void setFiles () {
-        fConfig = new File("/home/lvuser/paths/" + name + "/config.txt");
-        fTrajectory = new File("/home/lvuser/paths/" + name + "/trajectory.txt");
-    }
-
-    private void createFiles () {
-
-        try {
-
-            // Paths folder
-            if (!fConfig.getParentFile().getParentFile().exists()) {
-                fConfig.getParentFile().getParentFile().createNewFile();
-            }
-
-            // Folder for this specific path
-            if (!fConfig.getParentFile().exists()) {
-                fConfig.getParentFile().createNewFile();
-            }
-
-            // Config and points file
-            if (!fConfig.exists()) {
-                fConfig.createNewFile();
-            }
-
-            // Trajectory file
-            if (!fTrajectory.exists()) {
-                fTrajectory.createNewFile();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Remember that the trajectory has been generated
+        generated = true;
 
     }
 
-    private void resetFiles () {
-        fConfig.delete();
-        fTrajectory.delete();
-        try {
-            fConfig.createNewFile();
-            fTrajectory.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Trajectory generateAndGetTrajectory () {
+        generateTrajectory();
+        return trajectory;
     }
+
+    // Writing functions
 
     public void savePath () {
-
-        // TODO: Test that this works properly
 
         // Set the paths of the files
         setFiles();
@@ -184,13 +180,9 @@ public abstract class Path {
 
     }
 
-    public boolean fuzzyEquals (double a, double b, double maxDiff) {
-        return Math.abs(a - b) <= maxDiff;
-    }
+    // Reading functions
 
     public void loadSave () {
-
-        // TODO: Test that this works properly
 
         // Make sure the file paths are properly set
         setFiles();
@@ -270,6 +262,8 @@ public abstract class Path {
 
     }
 
+    // Validation functions
+
     public boolean validateLoadedSave () {
         return validateLoadedSave(false);
     }
@@ -323,6 +317,55 @@ public abstract class Path {
 
     }
 
+    // File helper functions
+
+    private void setFiles () {
+        fConfig = new File("/home/lvuser/paths/" + name + "/config.txt");
+        fTrajectory = new File("/home/lvuser/paths/" + name + "/trajectory.txt");
+    }
+
+    private void createFiles () {
+
+        try {
+
+            // Paths folder
+            if (!fConfig.getParentFile().getParentFile().exists())
+                fConfig.getParentFile().getParentFile().createNewFile();
+
+            // Folder for this specific path
+            if (!fConfig.getParentFile().exists())
+                fConfig.getParentFile().createNewFile();
+
+            // Config and points file
+            if (!fConfig.exists())
+                fConfig.createNewFile();
+
+            // Trajectory file
+            if (!fTrajectory.exists())
+                fTrajectory.createNewFile();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void deleteFiles () {
+
+        // Delete the files
+        fConfig.delete();
+        fTrajectory.delete();
+
+        // Delete the containing folder
+        fConfig.getParentFile().delete();
+
+    }
+
+    private void resetFiles () {
+        deleteFiles();
+        createFiles();
+    }
+
     private boolean doesSaveExist() {
 
         // Make sure the file paths are properly set
@@ -331,6 +374,12 @@ public abstract class Path {
         // Returns true if and only if all save files for this path exists
         return fConfig.exists() && fTrajectory.exists();
 
+    }
+
+    // Misc. helper functions
+
+    public boolean fuzzyEquals (double a, double b, double maxDiff) {
+        return Math.abs(a - b) <= maxDiff;
     }
 
 }
