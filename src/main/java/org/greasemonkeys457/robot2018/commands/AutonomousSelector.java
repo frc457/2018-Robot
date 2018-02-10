@@ -13,19 +13,31 @@ public class AutonomousSelector extends CommandGroup {
      * Enumeration used to represent the different positions our robot might start in
      */
     public enum StartingPosition {
-        Left,
-        Center,
-        Right
+        Left("Left"),
+        Center("Center"),
+        Right("Right");
+
+        public String name;
+
+        StartingPosition (String name) {
+            this.name = name;
+        }
     }
 
     /**
      * Enumeration used to represent the different goals we might want to attempt in auto
      */
     public enum Goal {
-        Nothing,
-        Baseline,
-        Switch,
-        Scale
+        Nothing("Do nothing"),
+        Baseline("Cross the baseline"),
+        Switch("Place a cube in the switch"),
+        Scale("Place a cube in the scale");
+
+        public String name;
+
+        Goal (String name) {
+            this.name = name;
+        }
     }
 
     // Input values

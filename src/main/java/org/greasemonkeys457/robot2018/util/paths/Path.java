@@ -37,7 +37,7 @@ public abstract class Path {
         this.config = config;
     }
 
-    void setPoints(Waypoint[] points) {
+    void setPoints (Waypoint[] points) {
         this.points = points;
     }
 
@@ -366,7 +366,7 @@ public abstract class Path {
         createFiles();
     }
 
-    private boolean doesSaveExist() {
+    private boolean doesSaveExist () {
 
         // Make sure the file paths are properly set
         setFiles();
