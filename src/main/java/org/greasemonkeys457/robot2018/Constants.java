@@ -1,7 +1,6 @@
 package org.greasemonkeys457.robot2018;
 
 import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
 
 public class Constants {
 

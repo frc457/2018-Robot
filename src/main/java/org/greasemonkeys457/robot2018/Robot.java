@@ -19,9 +19,8 @@ public class Robot extends IterativeRobot {
     public static OI oi;
 
     // Autonomous chooser
-    SendableChooser<Command> chooser;
-    SendableChooser<StartingPosition> stposChooser;
-    SendableChooser<Goal> goalChooser;
+    private SendableChooser<StartingPosition> stposChooser;
+    private SendableChooser<Goal> goalChooser;
 
     public void robotInit() {
 
