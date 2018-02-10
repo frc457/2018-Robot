@@ -32,6 +32,7 @@ public class Drivetrain extends Subsystem {
     private int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
     private double maxVelocity = Constants.kLowGearMaxVelocity;
     private double kWheelDiameter = Constants.kDriveWheelDiameter;
+    private double kWheelbase = Constants.kWheelbaseWidth;
 
     // Pathfinder variables
     public EncoderFollower rightEncoderFollower;
@@ -285,13 +286,11 @@ public class Drivetrain extends Subsystem {
     }
     public void setPath (Path path) {
 
-        // TODO: Path manager
-
         // Generate the path
         Trajectory trajectory = path.getTrajectory();
 
         // Modify using the wheelbase
-        TankModifier modifier = new TankModifier(trajectory).modify(25.5/12.0);
+        TankModifier modifier = new TankModifier(trajectory).modify(kWheelbase);
 
         // Set the encoder followers
         rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
