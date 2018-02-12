@@ -18,6 +18,11 @@ public class RobotMap {
     public static int leftEncoderA  = 2;
     public static int leftEncoderB  = 3;
 
-    // TODO: NavX?
+    // Mandible
+    // TODO: Mandible values are placeholders; add actual values
+    public static int mandRightMotor = 10;
+    public static int mandLeftMotor = 11;
+    public static int mandGripperForward = 9;
+    public static int mandGripperReverse = 8;
 
 }

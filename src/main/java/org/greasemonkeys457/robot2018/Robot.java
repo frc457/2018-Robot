@@ -9,11 +9,13 @@ import org.greasemonkeys457.robot2018.commands.AutonomousSelector;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.StartingPosition;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.Goal;
 import org.greasemonkeys457.robot2018.subsystems.Drivetrain;
+import org.greasemonkeys457.robot2018.subsystems.Mandible;
 
 public class Robot extends IterativeRobot {
 
     // Subsystems
     public static Drivetrain drivetrain;
+    public static Mandible mandible;
 
     // OI
     public static OI oi;
@@ -107,6 +109,7 @@ public class Robot extends IterativeRobot {
     public void reset () {
 
         drivetrain.reset();
+        mandible.reset();
 
     }
 
