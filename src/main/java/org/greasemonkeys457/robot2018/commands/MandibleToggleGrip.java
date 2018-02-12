@@ -12,11 +12,7 @@ public class MandibleToggleGrip extends Command {
     public void execute () {
 
         // Toggle the state of the mandible's grip.
-        if (Robot.mandible.isGripping()) {
-            Robot.mandible.setGripping(false);
-        } else {
-            Robot.mandible.setGripping(true);
-        }
+        Robot.mandible.setGripping(!Robot.mandible.isGripping());
 
     }
 

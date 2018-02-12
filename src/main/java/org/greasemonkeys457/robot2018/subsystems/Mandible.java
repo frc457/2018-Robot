@@ -22,13 +22,19 @@ public class Mandible extends Subsystem {
         mLeftMotor = new TalonSRX(RobotMap.mandLeftMotor);
         mGripper = new DoubleSolenoid(RobotMap.mandGripperForward, RobotMap.mandGripperReverse);
 
-        // Configure talons
-        // TODO: Invert one motor
-        // TODO: Set a master and a follower
-        // TODO: Configure voltage outputs (?)
+        // Configure everything
+        configureTalons();
 
         // Ensure subsystem is in its' default state
         reset();
+
+    }
+
+    private void configureTalons () {
+
+        // TODO: Invert one motor
+        // TODO: Set a master and a follower
+        // TODO: Configure voltage outputs (?)
 
     }
 
@@ -45,10 +51,17 @@ public class Mandible extends Subsystem {
         mIsGripping = wantsToGrip;
 
     }
+
+    public void setSpeed (double leftSpeed, double rightSpeed) {
+
+        mLeftMotor.set(ControlMode.PercentOutput, leftSpeed);
+        mRightMotor.set(ControlMode.PercentOutput, rightSpeed);
+
+    }
+
     public void setSpeed (double speed) {
 
-        mRightMotor.set(ControlMode.PercentOutput, speed);
-        mLeftMotor.set(ControlMode.PercentOutput, speed);
+        setSpeed(speed, speed);
 
     }
 
