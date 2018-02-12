@@ -3,9 +3,7 @@ package org.greasemonkeys457.robot2018;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import org.greasemonkeys457.robot2018.commands.DriveShiftToLow;
-import org.greasemonkeys457.robot2018.commands.DriveShiftToHigh;
-import org.greasemonkeys457.robot2018.commands.DriveToggleGears;
+import org.greasemonkeys457.robot2018.commands.*;
 
 public class OI {
 
