@@ -9,6 +9,7 @@ public class OI {
 
     // Controllers
     public Joystick driverController = new Joystick(0);
+    public Joystick operatorController = new Joystick(1);
 
     // Buttons
     public Button driverA  = new JoystickButton(driverController, 1);

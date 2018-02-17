@@ -13,6 +13,9 @@ public class Constants {
     public static double kRobotWidth = 27.5 / 12.0;
     public static double kRobotLength = 32.5 / 12.0;
 
+    // Elevator
+    public static double kElevPitchDiameter = 1.45; // in inches
+
     // Pathfinder variables
     public static double kLowGearMaxVelocity = 8.4;
     public static double kLowGearMaxAccel = 8.0;

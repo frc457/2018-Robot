@@ -9,12 +9,13 @@ import org.greasemonkeys457.robot2018.commands.AutonomousSelector;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.StartingPosition;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.Goal;
 import org.greasemonkeys457.robot2018.subsystems.Drivetrain;
+import org.greasemonkeys457.robot2018.subsystems.Elevator;
 
 public class Robot extends IterativeRobot {
 
     // Subsystems
     public static Drivetrain drivetrain;
-    // public static Elevator elevator;
+    public static Elevator elevator;
 
     // OI
     public static OI oi;
@@ -30,6 +31,7 @@ public class Robot extends IterativeRobot {
 
         // Define subsystems
         drivetrain = new Drivetrain();
+        elevator = new Elevator();
 
         // Define OI
         oi = new OI();

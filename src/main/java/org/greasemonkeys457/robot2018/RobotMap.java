@@ -22,7 +22,8 @@ public class RobotMap {
 
     // Elevator
     // TODO: Elevator values are placeholders; add actual values
-    public static int elevatorMotor = 12;
+    public static int elevatorTopMotor = 12;
+    public static int elevatorBottomMotor = 43;
     public static int elevatorEncoderA = 4;
     public static int elevatorEncoderB = 5;
 
