@@ -101,6 +101,13 @@ public class Elevator extends Subsystem {
 
     }
 
+    public void zeroSensors () {
+
+        // Zero the encoders
+        encoder.reset();
+
+    }
+
     @Override
     protected void initDefaultCommand() {
         // TODO: Change this to ElevatorHoldPosition
