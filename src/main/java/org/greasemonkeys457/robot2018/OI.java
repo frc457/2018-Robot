@@ -16,12 +16,17 @@ public class OI {
     public Button driverLB = new JoystickButton(driverController, 5);
     public Button driverRB = new JoystickButton(driverController, 6);
 
+    public Button operatorA = new JoystickButton(operatorController, 1);
+
     public OI () {
 
         // Drive shifting
         driverA.whenPressed(new DriveToggleGears());
         driverLB.whenPressed(new DriveShiftToLow());
         driverRB.whenPressed(new DriveShiftToHigh());
+
+        // Mandible control
+        operatorA.whenPressed(new MandibleToggleGrip());
 
     }
 
