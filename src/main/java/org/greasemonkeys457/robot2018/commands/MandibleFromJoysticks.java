@@ -17,8 +17,12 @@ public class MandibleFromJoysticks extends Command {
         // Grab input from the controller
         double leftJoystick = -Robot.oi.operatorController.getRawAxis(1);
         double rightJoystick = -Robot.oi.operatorController.getRawAxis(5);
-        double rightTrigger = Robot.oi.operatorController.getRawAxis(3);
-        double leftTrigger = Robot.oi.operatorController.getRawAxis(2);
+        //double rightTrigger = Robot.oi.operatorController.getRawAxis(3);
+        //double leftTrigger = Robot.oi.operatorController.getRawAxis(2);
+        // TODO: Triggers are disabled here because they're being used for the elevator.
+        // Reimplement triggers once we have position control for the elevator
+        double leftTrigger = 0;
+        double rightTrigger = 0;
 
         // Decide what control method to use
         if (Math.abs(leftTrigger) > 0.01) {

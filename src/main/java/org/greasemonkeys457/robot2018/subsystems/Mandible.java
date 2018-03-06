@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.RobotMap;
+import org.greasemonkeys457.robot2018.commands.MandibleFromJoysticks;
 
 public class Mandible extends Subsystem {
 
@@ -79,7 +80,7 @@ public class Mandible extends Subsystem {
 
     @Override
     protected void initDefaultCommand () {
-        // No default command.
+        setDefaultCommand(new MandibleFromJoysticks());
     }
 
 }
