@@ -15,6 +15,7 @@ public class Constants {
 
     // Elevator
     public static double kElevPitchDiameter = 1.45; // in inches
+    // TODO: This is different on the comp bot, which has a 1.805 inch pitch diameter
 
     // Pathfinder variables
     public static double kLowGearMaxVelocity = 8.4;
