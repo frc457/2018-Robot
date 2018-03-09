@@ -18,6 +18,14 @@ public class Elevator extends Subsystem {
     // Target variables
     private double targetPosition; // TODO: Set default value for this (0?)
 
+    // State variables
+    EControlMode controlMode;
+
+    public enum EControlMode {
+        SpeedControl,
+        PositionControl
+    }
+
     public Elevator () {
 
         // Define hardware
@@ -28,6 +36,9 @@ public class Elevator extends Subsystem {
         // Configuration
         configureTalons();
         configureEncoders();
+
+        // Control mode
+        controlMode = Constants.kControlMode;
 
     }
 
@@ -57,16 +68,10 @@ public class Elevator extends Subsystem {
 
     /**
      * Sets the speed of the motors on the elevator.
-     * @deprecated Try to use setTargetPosition instead.
      * @param speed The desired speed for the motors to run at
      */
-    @Deprecated
     public void setSpeed (double speed) {
 
-        /*
-         * This is marked as deprecated because it's really a terrible way to control the elevator.
-         * Using position control rather than speed control is preferred. Use that instead if it works.
-         */
         masterMotor.set(ControlMode.PercentOutput, speed);
 
     }
@@ -97,7 +102,12 @@ public class Elevator extends Subsystem {
     public void reset () {
 
         // Return hardware to its' default state
-        // TODO: Set default position
+        if (controlMode == EControlMode.SpeedControl) {
+            setSpeed(0.0);
+        }
+        if (controlMode == EControlMode.PositionControl) {
+            setTargetPosition(0.0);
+        }
 
     }
 
@@ -110,8 +120,10 @@ public class Elevator extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        // TODO: Change this to ElevatorHoldPosition
-        setDefaultCommand(new ElevatorFromJoysticks());
+        if (controlMode == EControlMode.SpeedControl)
+            setDefaultCommand(new ElevatorFromJoysticks());
+        else if (controlMode == EControlMode.PositionControl)
+            setDefaultCommand(new ElevatorHoldPosition());
     }
 
 }

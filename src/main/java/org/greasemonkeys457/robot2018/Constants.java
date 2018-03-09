@@ -1,6 +1,7 @@
 package org.greasemonkeys457.robot2018;
 
 import jaci.pathfinder.Trajectory;
+import org.greasemonkeys457.robot2018.subsystems.Elevator;
 import org.greasemonkeys457.robot2018.util.paths.*;
 
 public class Constants {
@@ -16,6 +17,7 @@ public class Constants {
     // Elevator
     public static double kElevPitchDiameter = 1.45; // in inches
     // TODO: This is different on the comp bot, which has a 1.805 inch pitch diameter
+    public static Elevator.EControlMode kControlMode = Elevator.EControlMode.SpeedControl;
 
     // Pathfinder variables
     public static double kLowGearMaxVelocity = 8.4;
