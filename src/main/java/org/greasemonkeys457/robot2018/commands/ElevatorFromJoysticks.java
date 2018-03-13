@@ -28,6 +28,9 @@ public class ElevatorFromJoysticks extends Command {
         else
             output = 0.0;
 
+        // TODO: Remove test code
+        System.out.println("Elevator output: " + output);
+
         // Set the speed of the elevator motors
         Robot.elevator.setSpeed(output);
 

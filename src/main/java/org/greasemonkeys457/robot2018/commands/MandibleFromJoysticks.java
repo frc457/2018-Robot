@@ -24,8 +24,11 @@ public class MandibleFromJoysticks extends Command {
         double leftTrigger = 0;
         double rightTrigger = 0;
 
+        if (Robot.oi.operatorUp.get()) Robot.mandible.setSpeed(0.75);
+        else if (Robot.oi.operatorDown.get()) Robot.mandible.setSpeed(-0.75);
+
         // Decide what control method to use
-        if (Math.abs(leftTrigger) > 0.01) {
+        else if (Math.abs(leftTrigger) > 0.01) {
 
             // Run the motors inward at the same speed
             Robot.mandible.setSpeed(-leftTrigger);

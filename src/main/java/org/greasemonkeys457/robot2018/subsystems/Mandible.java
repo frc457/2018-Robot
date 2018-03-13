@@ -33,7 +33,9 @@ public class Mandible extends Subsystem {
 
     private void configureTalons () {
 
-        // TODO: Invert one motor
+        // Invert one motor
+        mRightMotor.setInverted(true);
+        mLeftMotor.setInverted(false);
         // TODO: Set a master and a follower
         // TODO: Configure voltage outputs (?)
 

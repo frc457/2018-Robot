@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.greasemonkeys457.robot2018.commands.*;
+import org.greasemonkeys457.robot2018.util.oxilib.POVButton;
 
 public class OI {
 
@@ -16,7 +17,11 @@ public class OI {
     public Button driverLB = new JoystickButton(driverController, 5);
     public Button driverRB = new JoystickButton(driverController, 6);
 
-    public Button operatorA = new JoystickButton(operatorController, 1);
+    public Button operatorA  = new JoystickButton(operatorController, 1);
+    public Button operatorLB = new JoystickButton(operatorController, 6);
+
+    public Button operatorUp = new POVButton(operatorController, POVButton.Direction.UP);
+    public Button operatorDown = new POVButton(operatorController, POVButton.Direction.DOWN);
 
     public OI () {
 
@@ -26,7 +31,15 @@ public class OI {
         driverRB.whenPressed(new DriveShiftToHigh());
 
         // Mandible control
-        operatorA.whenPressed(new MandibleToggleGrip());
+        operatorLB.whenPressed(new MandibleToggleGrip());
+
+        /*
+        operatorUp.whenPressed(new MandibleSetSpeed(.75));
+        operatorUp.whenReleased(new MandibleSetSpeed(0.0));
+
+        operatorDown.whenPressed(new MandibleSetSpeed(-.75));
+        operatorDown.whenReleased(new MandibleSetSpeed(0.0));
+        */
 
     }
 

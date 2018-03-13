@@ -6,7 +6,7 @@ import org.greasemonkeys457.robot2018.util.paths.*;
 public class Constants {
 
     // Drive
-    public static double kDriveScale = 1.0;
+    public static double kDriveScale = 0.7;
     public static double kDriveWheelDiameter = 6.0 / 12.0; // in feet
     public static int kEncoderPulsesPerRev = 64;
     public static double kWheelbaseWidth = 23.5 / 12.0;

@@ -44,6 +44,9 @@ public class Elevator extends Subsystem {
 
     public void configureEncoders () {
 
+        // Reverse direction
+        encoder.setReverseDirection(true);
+
         // Grab constants that we need
         double pitchDiameter = Constants.kElevPitchDiameter;
         double encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
@@ -57,10 +60,8 @@ public class Elevator extends Subsystem {
 
     /**
      * Sets the speed of the motors on the elevator.
-     * @deprecated Try to use setTargetPosition instead.
      * @param speed The desired speed for the motors to run at
      */
-    @Deprecated
     public void setSpeed (double speed) {
 
         /*
@@ -90,6 +91,10 @@ public class Elevator extends Subsystem {
 
     public double getCurrentPosition () {
         return encoder.getDistance();
+    }
+
+    public Encoder getEncoder() {
+        return encoder;
     }
 
     // Misc.
