@@ -8,18 +8,18 @@ public class RobotMap {
      */
 
     // Drivetrain
-    public static int lfMotor = 1;
+    public static int lfMotor = 3;
     public static int lbMotor = 2;
-    public static int rfMotor = 3;
-    public static int rbMotor = 4;
+    public static int rfMotor = 0;
+    public static int rbMotor = 1;
 
     // Elevator
-    public static int elevatorBottomMotor = 5;
+    public static int elevatorBottomMotor = 7;
     public static int elevatorTopMotor = 6;
 
     // Mandible
-    public static int mandRightMotor = 7;
-    public static int mandLeftMotor = 8;
+    public static int mandRightMotor = 4;
+    public static int mandLeftMotor = 5;
 
     /*
      * Pneumatics (PCM ports)
@@ -28,12 +28,12 @@ public class RobotMap {
      */
 
     // Drivetrain
-    public static int shifterForward = 0;
-    public static int shifterReverse = 1;
+    public static int shifterForward = 2;
+    public static int shifterReverse = 3;
 
     // Mandible
-    public static int mandGripperForward = 3;
-    public static int mandGripperReverse = 2;
+    public static int mandGripperForward = 1;
+    public static int mandGripperReverse = 0;
 
     /*
      * Encoders
@@ -42,13 +42,13 @@ public class RobotMap {
      */
 
     // Drivetrain
-    public static int rightEncoderA = 0;
-    public static int rightEncoderB = 1;
-    public static int leftEncoderA  = 2;
-    public static int leftEncoderB  = 3;
+    public static int rightEncoderA = 4;
+    public static int rightEncoderB = 5;
+    public static int leftEncoderA  = 3;
+    public static int leftEncoderB  = 2;
 
     // Elevator
-    public static int elevatorEncoderA = 4;
-    public static int elevatorEncoderB = 5;
+    public static int elevatorEncoderA = 0;
+    public static int elevatorEncoderB = 1;
 
 }

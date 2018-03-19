@@ -11,8 +11,9 @@ public class Constants {
     public static double kDriveWheelDiameter = 6.0 / 12.0; // in feet
     public static int kEncoderPulsesPerRev = 64;
     public static double kWheelbaseWidth = 23.5 / 12.0;
-    public static double kRobotWidth = 27.5 / 12.0;
-    public static double kRobotLength = 32.5 / 12.0;
+    public static double kRobotWidth = 34.0 / 12.0;
+    public static double kRobotLength = 39.0 / 12.0;
+    public static double kElevatorScale = 0.7;
 
     // Elevator
     public static double kElevPitchDiameter = 1.45; // in inches

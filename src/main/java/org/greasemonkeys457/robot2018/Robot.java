@@ -1,5 +1,7 @@
 package org.greasemonkeys457.robot2018;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -58,11 +60,22 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putData(stposChooser);
         SmartDashboard.putData(goalChooser);
 
+        // Camera
+        Thread visionThread = new Thread(() -> {
+
+            UsbCamera usbCamera = CameraServer.getInstance().startAutomaticCapture();
+            usbCamera.setResolution(640, 480);
+
+        });
+        visionThread.setDaemon(true);
+        visionThread.start();
+
     }
 
     public void disabledInit() {
         reset();
         if (autoCommand != null) autoCommand.cancel();
+        // mandible.setGripping(true);
     }
 
     public void autonomousInit() {
@@ -83,6 +96,11 @@ public class Robot extends IterativeRobot {
 
         // TODO: Remove test code
         mandible.setGripping(false);
+        drivetrain.setLowGear(true);
+
+    }
+
+        // TODO: Remove test code
         drivetrain.setLowGear(true);
 
     }

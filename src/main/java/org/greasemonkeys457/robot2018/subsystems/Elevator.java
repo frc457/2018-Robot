@@ -75,7 +75,20 @@ public class Elevator extends Subsystem {
      */
     public void setSpeed (double speed) {
 
-        masterMotor.set(ControlMode.PercentOutput, speed);
+        masterMotor.set(ControlMode.PercentOutput, elevatorScaling(speed));
+
+    }
+
+    public double elevatorScaling (double speed) {
+
+        // Run the input speed through the scaling function.
+        speed = (speed * Constants.kElevatorScale);
+
+        if (Math.abs(speed) < 0.001) {
+            speed = 0.0;
+        }
+
+        return speed;
 
     }
 
