@@ -100,11 +100,6 @@ public class Robot extends IterativeRobot {
 
     }
 
-        // TODO: Remove test code
-        drivetrain.setLowGear(true);
-
-    }
-
     public void testInit() {
 
         // Generate paths if needed
