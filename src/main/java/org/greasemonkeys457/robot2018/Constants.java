@@ -13,12 +13,15 @@ public class Constants {
     public static double kWheelbaseWidth = 23.5 / 12.0;
     public static double kRobotWidth = 34.0 / 12.0;
     public static double kRobotLength = 39.0 / 12.0;
-    public static double kElevatorScale = 0.7;
 
     // Elevator
-    public static double kElevPitchDiameter = 1.45; // in inches
-    // TODO: This is different on the comp bot, which has a 1.805 inch pitch diameter
+    // TODO: The pitch diameter is different on the comp bot, which has a 1.805 inch pitch diameter
     public static Elevator.EControlMode kControlMode = Elevator.EControlMode.SpeedControl;
+    public static double kElevPitchDiameter = 1.45; // in inches
+    public static double kElevatorScale = 0.7;
+
+    // Mandible
+    public static double kMandibleScale = 0.4;
 
     // Pathfinder variables
     public static double kLowGearMaxVelocity = 8.4;

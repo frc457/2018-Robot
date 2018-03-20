@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.followers.EncoderFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 import org.greasemonkeys457.robot2018.Constants;
@@ -26,11 +25,11 @@ public class Drivetrain extends Subsystem {
     private final AHRS mNavX;
 
     // State variables
-    private boolean mIsLowGear;
+    private boolean sIsLowGear;
 
     // Constants
-    private int encoderPulsesPerRev = Constants.kEncoderPulsesPerRev;
-    private double maxVelocity = Constants.kLowGearMaxVelocity;
+    private int kEncPPR = Constants.kEncoderPulsesPerRev;
+    private double kMaxVel = Constants.kLowGearMaxVelocity;
     private double kWheelDiameter = Constants.kDriveWheelDiameter;
     private double kWheelbase = Constants.kWheelbaseWidth;
 
@@ -114,8 +113,8 @@ public class Drivetrain extends Subsystem {
     private void configureEncoders () {
 
         // Set distance per pulse
-        mRightEncoder.setDistancePerPulse((kWheelDiameter * Math.PI) / encoderPulsesPerRev);
-        mLeftEncoder.setDistancePerPulse((kWheelDiameter * Math.PI) / encoderPulsesPerRev);
+        mRightEncoder.setDistancePerPulse((kWheelDiameter * Math.PI) / kEncPPR);
+        mLeftEncoder.setDistancePerPulse((kWheelDiameter * Math.PI) / kEncPPR);
 
         // Invert one side
         mLeftEncoder.setReverseDirection(true);
@@ -128,12 +127,12 @@ public class Drivetrain extends Subsystem {
         double kP = 0.001;
         double kI = 0;
         double kD = 0;
-        double kV = (1.0/maxVelocity);
+        double kV = (1.0/ kMaxVel);
         double kA = 0;
 
         // Configure the encoders
-        rightEncoderFollower.configureEncoder(mRightEncoder.getRaw(), encoderPulsesPerRev, kWheelDiameter);
-        leftEncoderFollower.configureEncoder(mLeftEncoder.getRaw(), encoderPulsesPerRev, kWheelDiameter);
+        rightEncoderFollower.configureEncoder(mRightEncoder.getRaw(), kEncPPR, kWheelDiameter);
+        leftEncoderFollower.configureEncoder(mLeftEncoder.getRaw(), kEncPPR, kWheelDiameter);
 
         // Configure PIDVA
         rightEncoderFollower.configurePIDVA(kP, kI, kD, kV, kA);
@@ -160,7 +159,7 @@ public class Drivetrain extends Subsystem {
             mShifter.set(DoubleSolenoid.Value.kReverse);
 
         // Update the state variable
-        mIsLowGear = wantsLowGear;
+        sIsLowGear = wantsLowGear;
 
     }
 
@@ -177,7 +176,7 @@ public class Drivetrain extends Subsystem {
      * @return Whether or not the robot is currently in low gear
      */
     public boolean isLowGear () {
-        return mIsLowGear;
+        return sIsLowGear;
     }
 
     /**
