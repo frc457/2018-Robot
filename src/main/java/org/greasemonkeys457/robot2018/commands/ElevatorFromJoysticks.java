@@ -1,9 +1,7 @@
 package org.greasemonkeys457.robot2018.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.Robot;
-import org.greasemonkeys457.robot2018.subsystems.Elevator;
 
 public class ElevatorFromJoysticks extends Command {
 
@@ -28,9 +26,6 @@ public class ElevatorFromJoysticks extends Command {
             output = -leftTrigger;
         else
             output = 0.0;
-
-        // TODO: Remove test code
-        System.out.println("Elevator output: " + output);
 
         // Set the speed of the elevator motors
         Robot.elevator.setSpeed(output);

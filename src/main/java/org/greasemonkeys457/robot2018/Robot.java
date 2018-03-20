@@ -75,7 +75,6 @@ public class Robot extends IterativeRobot {
     public void disabledInit() {
         reset();
         if (autoCommand != null) autoCommand.cancel();
-        // mandible.setGripping(true);
     }
 
     public void autonomousInit() {
