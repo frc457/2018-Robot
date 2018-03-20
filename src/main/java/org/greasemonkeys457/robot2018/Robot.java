@@ -92,13 +92,7 @@ public class Robot extends IterativeRobot {
 
     }
 
-    public void teleopInit() {
-
-        // TODO: Remove test code
-        mandible.setGripping(false);
-        drivetrain.setLowGear(true);
-
-    }
+    public void teleopInit() {}
 
     public void testInit() {
 
@@ -123,11 +117,6 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-
-        // TODO: Remove test code
-        SmartDashboard.putNumber("Right drive enc", drivetrain.getRightEncoder().getDistance());
-        SmartDashboard.putNumber("Left drive enc", drivetrain.getLeftEncoder().getDistance());
-        SmartDashboard.putNumber("Elevator end", elevator.getCurrentPosition());
     }
 
     public void testPeriodic() {}
