@@ -5,7 +5,7 @@ import org.greasemonkeys457.robot2018.Robot;
 
 public class ElevatorSetPosition extends Command {
 
-    public ElevatorSetPosition (double height) {
+    public ElevatorSetPosition (int height) {
 
         // This command uses the elevator, so
         requires(Robot.elevator);
