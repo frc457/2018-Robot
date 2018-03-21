@@ -16,7 +16,7 @@ public class Elevator extends Subsystem {
     private final Encoder encoder;
 
     // Target variables
-    private double targetPosition; // TODO: Set default value for this (0?)
+    private int targetPosition; // in encoder ticks
 
     // State variables
     private EControlMode sControlMode;
@@ -96,7 +96,7 @@ public class Elevator extends Subsystem {
      * Sets the target height of the final stage of the elevator
      * @param targetPosition The target position, in inches
      */
-    public void setTargetPosition (double targetPosition) {
+    public void setTargetPosition (int targetPosition) {
 
         // TODO: Limit the value of targetPosition if it's too large or too small
         this.targetPosition = targetPosition;
@@ -105,12 +105,12 @@ public class Elevator extends Subsystem {
 
     // Getter functions
 
-    public double getTargetPosition () {
+    public int getTargetPosition () {
         return this.targetPosition;
     }
 
-    public double getCurrentPosition () {
-        return encoder.getDistance();
+    public int getCurrentPosition () {
+        return encoder.get();
     }
 
     public Encoder getEncoder() {
@@ -141,7 +141,7 @@ public class Elevator extends Subsystem {
             setSpeed(0.0);
         }
         if (sControlMode == EControlMode.PositionControl) {
-            setTargetPosition(0.0);
+            setTargetPosition(0);
         }
 
     }
