@@ -10,9 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.StartingPosition;
 import org.greasemonkeys457.robot2018.commands.AutonomousSelector.Goal;
-import org.greasemonkeys457.robot2018.profiles.robotmap.CompBot;
-import org.greasemonkeys457.robot2018.profiles.robotmap.PracticeBot;
-import org.greasemonkeys457.robot2018.profiles.robotmap.RobotMapProfile;
 import org.greasemonkeys457.robot2018.subsystems.Drivetrain;
 import org.greasemonkeys457.robot2018.subsystems.Elevator;
 import org.greasemonkeys457.robot2018.subsystems.Mandible;
@@ -27,13 +24,9 @@ public class Robot extends IterativeRobot {
     // OI
     public static OI oi;
 
-    // Electronics map
-    RobotMapProfile robotMap;
-
-    // Choosers
+    // Autonomous chooser
     private SendableChooser<StartingPosition> stposChooser;
     private SendableChooser<Goal> goalChooser;
-    private SendableChooser<RobotMapProfile> robotMapChooser;
 
     // Autonomous command
     Command autoCommand;
@@ -63,16 +56,9 @@ public class Robot extends IterativeRobot {
         goalChooser.addObject("Switch", Goal.Switch);
         goalChooser.addObject("Scale", Goal.Scale);
 
-        // Robot map switch
-        robotMapChooser = new SendableChooser<>();
-        robotMapChooser.setName("Robot:");
-        robotMapChooser.addDefault("Practice", new PracticeBot());
-        robotMapChooser.addObject("Comp", new CompBot());
-
         // Put the choosers on the smart dashboard
         SmartDashboard.putData(stposChooser);
         SmartDashboard.putData(goalChooser);
-        SmartDashboard.putData(robotMapChooser);
 
         // Camera
         Thread visionThread = new Thread(() -> {
@@ -122,9 +108,7 @@ public class Robot extends IterativeRobot {
     }
 
 
-    public void disabledPeriodic() {
-        // TODO: Listen for when robotMapChooser changes and redefine electronics using that
-    }
+    public void disabledPeriodic() {}
 
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
