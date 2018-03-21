@@ -19,13 +19,20 @@ public class Elevator extends Subsystem {
     private double targetPosition; // TODO: Set default value for this (0?)
 
     // State variables
-    EControlMode controlMode;
+    private EControlMode sControlMode;
 
+    /**
+     * Control modes.
+     * This allows us to easily switch between position control (automatic) or speed control (manual).
+     */
     public enum EControlMode {
         SpeedControl,
         PositionControl
     }
 
+    /**
+     * Constructor. Defines and configures everything.
+     */
     public Elevator () {
 
         // Define hardware
@@ -38,11 +45,13 @@ public class Elevator extends Subsystem {
         configureEncoders();
 
         // Control mode
-        controlMode = Constants.kControlMode;
+        sControlMode = Constants.kControlMode;
 
     }
 
-    public void configureTalons () {
+    // Configuration functions
+
+    private void configureTalons () {
 
         // Invert one side
         masterMotor.setInverted(false);
@@ -53,7 +62,7 @@ public class Elevator extends Subsystem {
 
     }
 
-    public void configureEncoders () {
+    private void configureEncoders () {
 
         // Reverse direction
         encoder.setReverseDirection(true);
@@ -75,6 +84,10 @@ public class Elevator extends Subsystem {
      */
     public void setSpeed (double speed) {
 
+        // Scale
+        speed = elevatorScaling(speed);
+
+        // Set
         masterMotor.set(ControlMode.PercentOutput, speed);
 
     }
@@ -106,13 +119,28 @@ public class Elevator extends Subsystem {
 
     // Misc.
 
+    private double elevatorScaling (double speed) {
+
+        // Scale the inputted speed
+        speed = (speed * Constants.kElevatorScale);
+
+        // Eliminate deadzones
+        if (Math.abs(speed) < 0.001) {
+            speed = 0.0;
+        }
+
+        // Return
+        return speed;
+
+    }
+
     public void reset () {
 
         // Return hardware to its' default state
-        if (controlMode == EControlMode.SpeedControl) {
+        if (sControlMode == EControlMode.SpeedControl) {
             setSpeed(0.0);
         }
-        if (controlMode == EControlMode.PositionControl) {
+        if (sControlMode == EControlMode.PositionControl) {
             setTargetPosition(0.0);
         }
 
@@ -127,9 +155,9 @@ public class Elevator extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        if (controlMode == EControlMode.SpeedControl)
+        if (sControlMode == EControlMode.SpeedControl)
             setDefaultCommand(new ElevatorFromJoysticks());
-        else if (controlMode == EControlMode.PositionControl)
+        else if (sControlMode == EControlMode.PositionControl)
             setDefaultCommand(new ElevatorHoldPosition());
     }
 

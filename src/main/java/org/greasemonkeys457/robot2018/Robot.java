@@ -1,5 +1,7 @@
 package org.greasemonkeys457.robot2018;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -58,6 +60,16 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putData(stposChooser);
         SmartDashboard.putData(goalChooser);
 
+        // Camera
+        Thread visionThread = new Thread(() -> {
+
+            UsbCamera usbCamera = CameraServer.getInstance().startAutomaticCapture();
+            usbCamera.setResolution(640, 480);
+
+        });
+        visionThread.setDaemon(true);
+        visionThread.start();
+
     }
 
     public void disabledInit() {
@@ -79,13 +91,7 @@ public class Robot extends IterativeRobot {
 
     }
 
-    public void teleopInit() {
-
-        // TODO: Remove test code
-        mandible.setGripping(false);
-        drivetrain.setLowGear(true);
-
-    }
+    public void teleopInit() {}
 
     public void testInit() {
 
@@ -110,11 +116,6 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-
-        // TODO: Remove test code
-        SmartDashboard.putNumber("Right drive enc", drivetrain.getRightEncoder().getDistance());
-        SmartDashboard.putNumber("Left drive enc", drivetrain.getLeftEncoder().getDistance());
-        SmartDashboard.putNumber("Elevator end", elevator.getCurrentPosition());
     }
 
     public void testPeriodic() {}

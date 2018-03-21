@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.MandibleFromJoysticks;
 
@@ -14,8 +15,11 @@ public class Mandible extends Subsystem {
     private final DoubleSolenoid mGripper;
 
     // State variables
-    private boolean mIsGripping;
+    private boolean sIsGripping;
 
+    /**
+     * Constructor. Defines and configures everything.
+     */
     public Mandible () {
 
         // Define hardware
@@ -31,6 +35,8 @@ public class Mandible extends Subsystem {
 
     }
 
+    // Configuration functions
+
     private void configureTalons () {
 
         // Invert one motor
@@ -40,6 +46,8 @@ public class Mandible extends Subsystem {
         // TODO: Configure voltage outputs (?)
 
     }
+
+    // Setter functions
 
     public void setGripping (boolean wantsToGrip) {
 
@@ -51,12 +59,17 @@ public class Mandible extends Subsystem {
         }
 
         // Update the state variable
-        mIsGripping = wantsToGrip;
+        sIsGripping = wantsToGrip;
 
     }
 
     public void setSpeed (double leftSpeed, double rightSpeed) {
 
+        // Scale
+        leftSpeed = speedScaling(leftSpeed);
+        rightSpeed = speedScaling(rightSpeed);
+
+        // Set
         mLeftMotor.set(ControlMode.PercentOutput, leftSpeed);
         mRightMotor.set(ControlMode.PercentOutput, rightSpeed);
 
@@ -68,8 +81,22 @@ public class Mandible extends Subsystem {
 
     }
 
+    // Getter functions
+
     public boolean isGripping () {
-        return mIsGripping;
+        return sIsGripping;
+    }
+
+    // Misc.
+
+    public double speedScaling (double speed) {
+
+        // Scale the input
+        speed = speed * Constants.kMandibleScale;
+
+        // Return
+        return speed;
+
     }
 
     public void reset () {
