@@ -84,7 +84,11 @@ public class Elevator extends Subsystem {
      */
     public void setSpeed (double speed) {
 
-        masterMotor.set(ControlMode.PercentOutput, elevatorScaling(speed));
+        // Scale
+        speed = elevatorScaling(speed);
+
+        // Set
+        masterMotor.set(ControlMode.PercentOutput, speed);
 
     }
 
