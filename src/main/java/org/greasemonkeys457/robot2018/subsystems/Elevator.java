@@ -76,7 +76,7 @@ public class Elevator extends Subsystem {
 
     }
 
-    // Setter functions
+    // Speed
 
     /**
      * Sets the speed of the motors on the elevator.
@@ -92,33 +92,6 @@ public class Elevator extends Subsystem {
 
     }
 
-    /**
-     * Sets the target height of the final stage of the elevator
-     * @param targetPosition The target position, in inches
-     */
-    public void setTargetPosition (int targetPosition) {
-
-        // TODO: Limit the value of targetPosition if it's too large or too small
-        this.targetPosition = targetPosition;
-
-    }
-
-    // Getter functions
-
-    public int getTargetPosition () {
-        return this.targetPosition;
-    }
-
-    public int getCurrentPosition () {
-        return encoder.get();
-    }
-
-    public Encoder getEncoder() {
-        return encoder;
-    }
-
-    // Misc.
-
     private double elevatorScaling (double speed) {
 
         // Scale the inputted speed
@@ -133,6 +106,29 @@ public class Elevator extends Subsystem {
         return speed;
 
     }
+
+    // Position
+
+    /**
+     * Sets the target height of the final stage of the elevator
+     * @param targetPosition The target position, in inches
+     */
+    public void setTargetPosition (int targetPosition) {
+
+        // TODO: Limit the value of targetPosition if it's too large or too small
+        this.targetPosition = targetPosition;
+
+    }
+
+    public int getTargetPosition () {
+        return this.targetPosition;
+    }
+
+    public int getCurrentPosition () {
+        return encoder.get();
+    }
+
+    // Misc.
 
     public void reset () {
 
