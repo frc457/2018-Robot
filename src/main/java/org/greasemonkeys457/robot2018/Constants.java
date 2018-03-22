@@ -16,13 +16,12 @@ public class Constants {
 
     // Elevator
     // TODO: The pitch diameter is different on the comp bot, which has a 1.805 inch pitch diameter
-    public static Elevator.EControlMode kControlMode = Elevator.EControlMode.SpeedControl;
     public static double kElevPitchDiameter = 1.45; // in inches
     public static double kElevatorScale = 0.7;
 
-    // Elevator control
-    public static int kMaxTicks = 400;
-    public static int kMinTicks = 100; // not starting position; lowest is just above the bumpers
+    // Elevator controller
+    public static int E_MAX_TICKS = 400;
+    public static int E_MIN_TICKS = 100; // not starting position; lowest is just above the bumpers
 
     // Mandible
     public static double kMandibleScale = 0.4;

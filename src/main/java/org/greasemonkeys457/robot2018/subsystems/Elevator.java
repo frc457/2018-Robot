@@ -15,20 +15,12 @@ public class Elevator extends Subsystem {
     private final TalonSRX masterMotor, followerMotor;
     private final Encoder encoder;
 
+    // Constants
+    private static final int MAX_TICKS = Constants.E_MAX_TICKS;
+    private static final int MIN_TICKS = Constants.E_MIN_TICKS;
+
     // Target variables
     private int targetPosition; // in encoder ticks
-
-    // State variables
-    private EControlMode sControlMode;
-
-    /**
-     * Control modes.
-     * This allows us to easily switch between position control (automatic) or speed control (manual).
-     */
-    public enum EControlMode {
-        SpeedControl,
-        PositionControl
-    }
 
     /**
      * Constructor. Defines and configures everything.
@@ -43,9 +35,6 @@ public class Elevator extends Subsystem {
         // Configuration
         configureTalons();
         configureEncoders();
-
-        // Control mode
-        sControlMode = Constants.kControlMode;
 
     }
 
@@ -128,17 +117,30 @@ public class Elevator extends Subsystem {
         return encoder.get();
     }
 
+    public int getMaxTicks () {
+        return MAX_TICKS;
+    }
+
+    public int getMinTicks () {
+        return MIN_TICKS;
+    }
+
+    /**
+     * Check if the elevator is currently within its' limits.
+     * @return 1 if too high, -1 if too low, 0 if good
+     */
+    public int withinLimits () {
+        if (getCurrentPosition() > MAX_TICKS) return 1;
+        else if (getCurrentPosition() < MIN_TICKS) return -1;
+        else return 0;
+    }
+
     // Misc.
 
     public void reset () {
 
         // Return hardware to its' default state
-        if (sControlMode == EControlMode.SpeedControl) {
-            setSpeed(0.0);
-        }
-        if (sControlMode == EControlMode.PositionControl) {
-            setTargetPosition(0);
-        }
+        setSpeed(0.0);
 
     }
 
@@ -151,10 +153,7 @@ public class Elevator extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        if (sControlMode == EControlMode.SpeedControl)
-            setDefaultCommand(new ElevatorFromJoysticks());
-        else if (sControlMode == EControlMode.PositionControl)
-            setDefaultCommand(new ElevatorHoldPosition());
+        // TODO: Add the Elevator Controller
     }
 
 }
