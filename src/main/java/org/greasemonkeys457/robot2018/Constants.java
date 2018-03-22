@@ -20,6 +20,10 @@ public class Constants {
     public static double kElevPitchDiameter = 1.45; // in inches
     public static double kElevatorScale = 0.7;
 
+    // Elevator control
+    public static int kMaxTicks = 400;
+    public static int kMinTicks = 100; // not starting position; lowest is just above the bumpers
+
     // Mandible
     public static double kMandibleScale = 0.4;
 
