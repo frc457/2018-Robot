@@ -1,14 +1,11 @@
 package org.greasemonkeys457.robot2018.controllers;
 
-import edu.wpi.first.wpilibj.command.Command;
 import org.greasemonkeys457.robot2018.Robot;
-import org.greasemonkeys457.robot2018.subsystems.Elevator;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  * Controls the elevator.
  */
-public class ElevatorController extends Command {
+public class ElevatorController {
 
     // State variables
     private boolean sHPRunning = false;
@@ -17,11 +14,7 @@ public class ElevatorController extends Command {
     // Constants
     private static final double kP = 1.0 / 64.0; // start slowing down 1 rotation before limit
 
-    public ElevatorController() {
-        requires(Robot.elevator);
-    }
-
-    public void execute () {
+    public void periodic () {
 
         // Grab operator input
         double opRTrig = Robot.oi.operatorController.getRawAxis(3);
@@ -120,6 +113,14 @@ public class ElevatorController extends Command {
 
     }
 
+    public void enable () {
+        sHPEnabled = true;
+    }
+
+    public void disable () {
+        sHPEnabled = false;
+    }
+
     /**
      * Make sure we don't try to set a motor's speed to more than 100% or less than -100%.
      * @param input unrounded input
@@ -129,10 +130,6 @@ public class ElevatorController extends Command {
         if (input >= 1) return 1;
         if (input <= -1) return -1;
         return input;
-    }
-
-    protected boolean isFinished() {
-        return false;
     }
 
 }

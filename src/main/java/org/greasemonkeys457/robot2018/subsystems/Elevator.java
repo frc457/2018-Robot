@@ -6,10 +6,13 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
-import org.greasemonkeys457.robot2018.commands.ElevatorFromJoysticks;
-import org.greasemonkeys457.robot2018.commands.ElevatorHoldPosition;
+import org.greasemonkeys457.robot2018.commands.ElevatorPeriodic;
+import org.greasemonkeys457.robot2018.controllers.ElevatorController;
 
 public class Elevator extends Subsystem {
+
+    // Controller
+    public static ElevatorController controller = new ElevatorController();
 
     // Hardware
     private final TalonSRX masterMotor, followerMotor;
@@ -104,7 +107,11 @@ public class Elevator extends Subsystem {
      */
     public void setTargetPosition (int targetPosition) {
 
-        // TODO: Limit the value of targetPosition if it's too large or too small
+        // Limit the target to within the minimum and maximum values
+        if (targetPosition > MAX_TICKS) targetPosition = MAX_TICKS;
+        if (targetPosition < MIN_TICKS) targetPosition = MIN_TICKS;
+
+        // Set
         this.targetPosition = targetPosition;
 
     }
@@ -153,7 +160,7 @@ public class Elevator extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        // TODO: Add the Elevator Controller
+        setDefaultCommand(new ElevatorPeriodic());
     }
 
 }
