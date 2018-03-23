@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
+import org.greasemonkeys457.robot2018.commands.ElevatorFromJoysticks;
 import org.greasemonkeys457.robot2018.commands.ElevatorPeriodic;
 import org.greasemonkeys457.robot2018.controllers.ElevatorController;
 
@@ -19,8 +20,8 @@ public class Elevator extends Subsystem {
     private final Encoder encoder;
 
     // Constants
-    private static final int MAX_TICKS = Constants.E_MAX_TICKS;
-    private static final int MIN_TICKS = Constants.E_MIN_TICKS;
+    private static final int MAX_TICKS = Constants.ElevatorPosition.MAX.ticks;
+    private static final int MIN_TICKS = Constants.ElevatorPosition.MIN.ticks;
 
     // Target variables
     private int targetPosition; // in encoder ticks
@@ -160,7 +161,7 @@ public class Elevator extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new ElevatorPeriodic());
+        setDefaultCommand(new ElevatorFromJoysticks());
     }
 
 }

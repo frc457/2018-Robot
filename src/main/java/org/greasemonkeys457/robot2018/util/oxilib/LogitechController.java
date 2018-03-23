@@ -4,9 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-public class LogitechController {
-
-    private Joystick joystick;
+public class LogitechController extends Joystick {
 
     public enum ButtonKey {
         A(1),
@@ -65,21 +63,21 @@ public class LogitechController {
      * @param port
      */
     public LogitechController (int port) {
-        joystick = new Joystick(port);
+        super(port);
     }
 
     public Button getButton (ButtonKey button) {
         return getButton(button.id);
     }
     public Button getButton (int id) {
-        return new JoystickButton(joystick, id);
+        return new JoystickButton(this, id);
     }
 
     public Button getPOVButton (POVButtonKey direction) {
         return getPOVButton(direction.angle);
     }
     public Button getPOVButton (int angle) {
-        return new POVButton(joystick, angle);
+        return new POVButton(this, angle);
     }
 
 }
