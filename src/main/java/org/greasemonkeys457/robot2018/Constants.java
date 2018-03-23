@@ -1,7 +1,6 @@
 package org.greasemonkeys457.robot2018;
 
 import jaci.pathfinder.Trajectory;
-import org.greasemonkeys457.robot2018.subsystems.Elevator;
 import org.greasemonkeys457.robot2018.util.paths.*;
 
 public class Constants {
@@ -14,6 +13,7 @@ public class Constants {
     // Elevator
     public static double kElevatorScale = 0.7;
     public static double kElevPitchDiameter = 1.45; // in inches
+    public static int kElevatorAllowance = 5; // used to determine if the elevator is at its' target position
 
     /**
      * This class connects different elevator positions for different goals with their associated encoder ticks value.

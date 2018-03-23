@@ -1,6 +1,7 @@
 package org.greasemonkeys457.robot2018.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.greasemonkeys457.robot2018.Constants.ElevatorPosition;
 import org.greasemonkeys457.robot2018.Robot;
 
 public class ElevatorSetPosition extends Command {
@@ -13,6 +14,10 @@ public class ElevatorSetPosition extends Command {
         // Set the position
         Robot.elevator.setTargetPosition(height);
 
+    }
+
+    public ElevatorSetPosition (ElevatorPosition position) {
+        this(position.ticks);
     }
 
     @Override

@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.ElevatorFromJoysticks;
-import org.greasemonkeys457.robot2018.commands.ElevatorPeriodic;
 import org.greasemonkeys457.robot2018.controllers.ElevatorController;
 
 public class Elevator extends Subsystem {
@@ -22,6 +21,7 @@ public class Elevator extends Subsystem {
     // Constants
     private static final int MAX_TICKS = Constants.ElevatorPosition.MAX.ticks;
     private static final int MIN_TICKS = Constants.ElevatorPosition.MIN.ticks;
+    private static final int ALLOWANCE = Constants.kElevatorAllowance;
 
     // Target variables
     private int targetPosition; // in encoder ticks
@@ -123,6 +123,10 @@ public class Elevator extends Subsystem {
 
     public int getCurrentPosition () {
         return encoder.get();
+    }
+
+    public boolean atTargetPosition () {
+        return Math.abs(getTargetPosition() - getCurrentPosition()) <= ALLOWANCE;
     }
 
     public int getMaxTicks () {
