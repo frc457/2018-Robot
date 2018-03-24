@@ -126,23 +126,23 @@ public abstract class Path {
 
     public void generatePathIfNeeded (boolean printErrors) {
 
-        if (printErrors) System.out.println("Starting with path " + name + "...");
+        printError(printErrors, "Starting with path " + name + "...");
 
         if (!doesSaveExist() && !generated) {
-            if (printErrors) System.out.println("Save files don't exist!");
+            printError(printErrors, "Save files don't exist!");
             generateAndSavePath();
         } else {
 
             loadSave();
 
             if (!validateLoadedSave() && !generated) {
-                if (printErrors) System.out.println("Loaded save files failed validation!");
+                printError(printErrors, "Loaded save files failed validation!");
                 generateAndSavePath();
             }
 
         }
 
-        if (printErrors) System.out.println("Done with path " + name + ".");
+        printError(printErrors, "Done with path " + name + ".");
 
     }
 
@@ -310,7 +310,7 @@ public abstract class Path {
                     config.max_velocity != loadedConfig.max_velocity || config.max_acceleration != loadedConfig.max_acceleration ||
                     config.max_jerk != loadedConfig.max_jerk || config.fit != loadedConfig.fit)
             {
-                if (printErrors) System.out.println("The trajectory configurations don't match!");
+                printError(printErrors, "The trajectory configurations don't match!");
                 failed = true;
             }
 
@@ -320,20 +320,20 @@ public abstract class Path {
                 double maxDiff = 1E-5;
 
                 if (!fuzzyEquals(points[i].x, loadedPoints[i].x, maxDiff)) {
-                    if (printErrors) System.out.print("X value on point " + i + " doesn't match! ");
-                    if (printErrors) System.out.println("Difference: " + (points[i].x - loadedPoints[i].x));
+                    printError(printErrors, "X value on point " + i + " doesn't match! ");
+                    printError(printErrors, "Difference: " + (points[i].x - loadedPoints[i].x));
                     failed = true;
                 }
 
                 if (!fuzzyEquals(points[i].y, loadedPoints[i].y, maxDiff)) {
-                    if (printErrors) System.out.print("Y value on point " + i + " doesn't match! ");
-                    if (printErrors) System.out.println("Difference: " + (points[i].y - loadedPoints[i].y));
+                    printError(printErrors, "Y value on point " + i + " doesn't match! ");
+                    printError(printErrors, "Difference: " + (points[i].y - loadedPoints[i].y));
                     failed = true;
                 }
 
                 if (!fuzzyEquals(points[i].angle, loadedPoints[i].angle, maxDiff)) {
-                    if (printErrors) System.out.print("Angle on point " + i + " doesn't match! ");
-                    if (printErrors) System.out.println("Difference: " + (points[i].x - loadedPoints[i].x));
+                    printError(printErrors, "Angle on point " + i + " doesn't match! ");
+                    printError(printErrors, "Difference: " + (points[i].x - loadedPoints[i].x));
                     failed = true;
                 }
 
@@ -403,6 +403,13 @@ public abstract class Path {
     }
 
     // Misc. helper functions
+
+    private void printError (String message) {
+        System.out.println("[ERROR] " + message);
+    }
+    private void printError (boolean bool, String message) {
+        if (bool) printError(message);
+    }
 
     public boolean fuzzyEquals (double a, double b, double maxDiff) {
         return Math.abs(a - b) <= maxDiff;
