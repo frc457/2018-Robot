@@ -15,7 +15,7 @@ public class Elevator extends Subsystem {
     public static ElevatorController controller = new ElevatorController();
 
     // Hardware
-    private final TalonSRX masterMotor, followerMotor;
+    private final TalonSRX topMotor, bottomMotor;
     private final Encoder encoder;
 
     // Constants
@@ -32,8 +32,8 @@ public class Elevator extends Subsystem {
     public Elevator () {
 
         // Define hardware
-        masterMotor = new TalonSRX(RobotMap.elevatorTopMotor);
-        followerMotor = new TalonSRX(RobotMap.elevatorBottomMotor);
+        topMotor = new TalonSRX(RobotMap.elevatorTopMotor);
+        bottomMotor = new TalonSRX(RobotMap.elevatorBottomMotor);
         encoder = new Encoder(RobotMap.elevatorEncoderA, RobotMap.elevatorEncoderB);
 
         // Configuration
@@ -47,11 +47,11 @@ public class Elevator extends Subsystem {
     private void configureTalons () {
 
         // Invert one side
-        masterMotor.setInverted(false);
-        followerMotor.setInverted(true);
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
 
         // Set followers
-        followerMotor.follow(masterMotor);
+        bottomMotor.follow(topMotor);
 
     }
 
@@ -81,7 +81,7 @@ public class Elevator extends Subsystem {
         speed = elevatorScaling(speed);
 
         // Set
-        masterMotor.set(ControlMode.PercentOutput, speed);
+        topMotor.set(ControlMode.PercentOutput, speed);
 
     }
 
