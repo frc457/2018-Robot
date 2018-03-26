@@ -1,5 +1,6 @@
 package org.greasemonkeys457.robot2018.controllers;
 
+import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.Robot;
 
 /**
@@ -8,7 +9,7 @@ import org.greasemonkeys457.robot2018.Robot;
 public class ElevatorController {
 
     // State variables
-    private boolean sHPEnabled = false;
+    private boolean sHPEnabled = Constants.kElevatorControl;
 
     // Constants
     private static final double kP = 1.0 / 64.0; // start slowing down 1 rotation before limit

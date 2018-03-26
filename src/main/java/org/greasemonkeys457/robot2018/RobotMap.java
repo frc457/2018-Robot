@@ -4,7 +4,6 @@ public class RobotMap {
 
     /*
      * Talons
-     * TODO: Configure and update talons (comp bot)
      */
 
     // Drivetrain
@@ -23,8 +22,6 @@ public class RobotMap {
 
     /*
      * Pneumatics (PCM ports)
-     * TODO: Test shifters (practice bot)
-     * TODO: Test shifters (comp bot)
      */
 
     // Drivetrain
@@ -37,8 +34,6 @@ public class RobotMap {
 
     /*
      * Encoders
-     * TODO: Test encoder direction (practice bot)
-     * TODO: Test encoder direction (comp bot)
      */
 
     // Drivetrain

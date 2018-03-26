@@ -367,7 +367,7 @@ public class AutonomousSelector extends CommandGroup {
     }
 
     private void placeCube () {
-        // TODO
+        addSequential(new MandibleOpen());
     }
 
     // Helper functions

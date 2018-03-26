@@ -15,6 +15,7 @@ public class Constants {
     public static double kElevPitchDiameter = 1.45; // in inches
     public static int kElevatorAllowance = 5; // used to determine if the elevator is at its' target position
     public static boolean kMoveElevatorInAuto = false;
+    public static boolean kElevatorControl = true;
 
     /**
      * This class connects different elevator positions for different goals with their associated encoder ticks value.
