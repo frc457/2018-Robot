@@ -8,7 +8,6 @@ import org.greasemonkeys457.robot2018.Robot;
 public class ElevatorController {
 
     // State variables
-    private boolean sHPRunning = false;
     private boolean sHPEnabled = false;
 
     // Constants
@@ -25,23 +24,21 @@ public class ElevatorController {
         opLTrig = noDeadzones(opLTrig);
 
         if (sHPEnabled) {
-            // Move the elevator if needed
-            if (opRTrig != 0)
-                manualControl(opRTrig);
-            else if (opLTrig != 0)
-                manualControl(-opLTrig);
-            else {
 
-                sHPRunning = true;
-                if (sHPEnabled) holdPosition();
+            // Manual control if the triggers are being pressed
+            if      (opRTrig > 0) manualControl(opRTrig);
+            else if (opLTrig > 0) manualControl(-opLTrig);
 
-            }
-        }
-        else {
-            if (opRTrig != 0)
-                superManualControl(opRTrig);
-            else if (opLTrig != 0)
-                superManualControl(-opLTrig);
+            // Automatic control if they aren't
+            else holdPosition();
+
+        } else {
+
+            // Super manual control (straight set speed)
+            if      (opRTrig > 0) superManualControl(opRTrig);
+            else if (opLTrig > 0) superManualControl(-opLTrig);
+            else superManualControl(0);
+
         }
 
     }
@@ -52,68 +49,39 @@ public class ElevatorController {
 
     private void manualControl (double speed) {
 
-        if (speed == 0) return;
-
-        // Limit position
-        if (sHPEnabled && Robot.elevator.withinLimits() != 0) {
-
-            // Check if speed is in the direction we're exceeding
-            if (Math.signum(speed) == Math.signum(Robot.elevator.withinLimits())) {
-
-                // Warn
-                System.out.println("WARNING: Don't try to move outside the limits!");
-
-                // Make sure HP is running
-                sHPRunning = true;
-
-                // Exit out of this function
-                return;
-
-            }
-
-        }
-
-        // Disable position control
-        sHPRunning = false;
-
-        // Calculate error
-        int limit = 0;
+        // Get limit based on direction
+        int limit = Robot.elevator.getCurrentPosition();
         if (speed > 0) limit = Robot.elevator.getMaxTicks();
         if (speed < 0) limit = Robot.elevator.getMinTicks();
 
+        // Calculate distance from limit (sign = direction, num = magnitude)
         int distFromLimit = limit - Robot.elevator.getCurrentPosition();
 
-        // Calculate max speed at current position
-        double max = (double) distFromLimit * kP;
-        max = roundPercentOutput(max);
+        // Calculate max speed at this point
+        double maxSpeed = (double)distFromLimit * kP;
+        maxSpeed = roundPercentOutput(maxSpeed);
 
-        // Calculate output
-        double output = Math.abs(max) * speed;
+        // Determine which speed we want to use
+        double output = 0.0;
+        if (Math.abs(speed) > Math.abs(maxSpeed)) output = maxSpeed;
+        if (Math.abs(speed) < Math.abs(maxSpeed)) output = speed;
 
         // Set speed
         Robot.elevator.setSpeed(output);
 
-        // Update target position
+        // Reset target position
         Robot.elevator.setTargetPosition(Robot.elevator.getCurrentPosition());
 
     }
 
     private void holdPosition () {
 
-        // Check if position control is running (false if the operator is controlling manually)
-        if (sHPRunning) {
+        // Calculate error & output
+        int error = Robot.elevator.getTargetPosition() - Robot.elevator.getCurrentPosition();
+        double output = (double)error * kP;
 
-            // Proportional gain
-            double kP = 1.0 / 64.0;
-
-            // Calculate error & output
-            int error = Robot.elevator.getTargetPosition() - Robot.elevator.getCurrentPosition();
-            double output = (double)error * kP;
-
-            // Set speed
-            if (sHPEnabled) Robot.elevator.setSpeed(output);
-
-        }
+        // Set speed
+        if (sHPEnabled) Robot.elevator.setSpeed(output);
 
     }
 

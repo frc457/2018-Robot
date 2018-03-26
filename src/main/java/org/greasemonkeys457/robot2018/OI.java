@@ -17,14 +17,16 @@ public class OI {
 
     // Buttons
     public Button driverA  = driverController.getButton(A);
-    public Button driverB  = driverController.getButton(B);
-    public Button driverX  = driverController.getButton(X);
     public Button driverY  = driverController.getButton(Y);
     public Button driverLB = driverController.getButton(LB);
     public Button driverRB = driverController.getButton(RB);
+    public Button driverBack  = driverController.getButton(Back);
+    public Button driverStart = driverController.getButton(Start);
 
     public Button operatorA  = operatorController.getButton(A);
     public Button operatorLB = operatorController.getButton(LB);
+    public Button operatorBack  = operatorController.getButton(Back);
+    public Button operatorStart = operatorController.getButton(Start);
 
     public Button operatorUp   = operatorController.getPOVButton(UP);
     public Button operatorDown = operatorController.getPOVButton(DOWN);
@@ -40,8 +42,12 @@ public class OI {
         operatorLB.whenPressed(new MandibleToggleGrip());
 
         // Elevator control testing
-        driverB.whenPressed(new ElevatorAutoDisable());
-        driverX.whenPressed(new ElevatorAutoEnable());
+        operatorStart.whenPressed(new ElevatorAutoDisable());
+        driverStart  .whenPressed(new ElevatorAutoDisable());
+
+        operatorBack .whenPressed(new ElevatorAutoEnable());
+        driverBack   .whenPressed(new ElevatorAutoEnable());
+
         driverY.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SWITCH));
 
     }
