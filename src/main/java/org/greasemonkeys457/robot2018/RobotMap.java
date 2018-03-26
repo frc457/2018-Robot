@@ -28,12 +28,12 @@ public class RobotMap {
      */
 
     // Drivetrain
-    public static int shifterForward = 3;
-    public static int shifterReverse = 2;
+    public static int shifterForward = 1;
+    public static int shifterReverse = 0;
 
     // Mandible
-    public static int mandGripperForward = 1;
-    public static int mandGripperReverse = 0;
+    public static int mandGripperForward = 3;
+    public static int mandGripperReverse = 2;
 
     /*
      * Encoders

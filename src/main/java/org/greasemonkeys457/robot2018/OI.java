@@ -19,6 +19,7 @@ public class OI {
     public Button driverA  = driverController.getButton(A);
     public Button driverB  = driverController.getButton(B);
     public Button driverX  = driverController.getButton(X);
+    public Button driverY  = driverController.getButton(Y);
     public Button driverLB = driverController.getButton(LB);
     public Button driverRB = driverController.getButton(RB);
 
@@ -41,6 +42,7 @@ public class OI {
         // Elevator control testing
         driverB.whenPressed(new ElevatorAutoDisable());
         driverX.whenPressed(new ElevatorAutoEnable());
+        driverY.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SWITCH));
 
     }
 

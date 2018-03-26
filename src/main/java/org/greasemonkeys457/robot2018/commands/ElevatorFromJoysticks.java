@@ -1,6 +1,7 @@
 package org.greasemonkeys457.robot2018.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greasemonkeys457.robot2018.Robot;
 
 public class ElevatorFromJoysticks extends Command {
@@ -29,6 +30,9 @@ public class ElevatorFromJoysticks extends Command {
 
         // Set the speed of the elevator motors
         Robot.elevator.setSpeed(output);
+
+        // TODO Remove test code
+        SmartDashboard.putNumber("Elevator enc", Robot.elevator.getCurrentPosition());
 
     }
 

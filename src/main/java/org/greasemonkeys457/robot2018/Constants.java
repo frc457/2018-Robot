@@ -22,12 +22,11 @@ public class Constants {
      */
     public enum ElevatorPosition {
 
-        // TODO: Measure these and set accordingly
         START(0), // resting on the bumpers
-        MIN(100), // just above the bumpers
-        SWITCH(200),
-        SCALE(300),
-        MAX(400); // highest point
+        MIN(44), // just above the bumpers
+        SWITCH(209),
+        SCALE(589),
+        MAX(590); // highest point
 
         public final int ticks;
 

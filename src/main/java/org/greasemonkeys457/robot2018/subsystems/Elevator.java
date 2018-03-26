@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.RobotMap;
 import org.greasemonkeys457.robot2018.commands.ElevatorFromJoysticks;
+import org.greasemonkeys457.robot2018.commands.ElevatorPeriodic;
 import org.greasemonkeys457.robot2018.controllers.ElevatorController;
 
 public class Elevator extends Subsystem {
@@ -165,7 +166,7 @@ public class Elevator extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new ElevatorFromJoysticks());
+        setDefaultCommand(new ElevatorPeriodic());
     }
 
 }

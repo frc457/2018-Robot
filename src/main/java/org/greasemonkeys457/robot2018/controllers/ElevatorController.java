@@ -24,18 +24,30 @@ public class ElevatorController {
         opRTrig = noDeadzones(opRTrig);
         opLTrig = noDeadzones(opLTrig);
 
-        // Move the elevator if needed
-        if (opRTrig != 0)
-            manualControl(opRTrig);
-        else if (opLTrig != 0)
-            manualControl(-opLTrig);
+        if (sHPEnabled) {
+            // Move the elevator if needed
+            if (opRTrig != 0)
+                manualControl(opRTrig);
+            else if (opLTrig != 0)
+                manualControl(-opLTrig);
+            else {
 
-        // Enable position control if there's no input
-        else sHPRunning = true;
+                sHPRunning = true;
+                if (sHPEnabled) holdPosition();
 
-        // Hold position if enabled
-        if (sHPEnabled) holdPosition();
+            }
+        }
+        else {
+            if (opRTrig != 0)
+                superManualControl(opRTrig);
+            else if (opLTrig != 0)
+                superManualControl(-opLTrig);
+        }
 
+    }
+
+    private void superManualControl (double speed) {
+        Robot.elevator.setSpeed(speed);
     }
 
     private void manualControl (double speed) {
@@ -43,7 +55,7 @@ public class ElevatorController {
         if (speed == 0) return;
 
         // Limit position
-        if (Robot.elevator.withinLimits() != 0) {
+        if (sHPEnabled && Robot.elevator.withinLimits() != 0) {
 
             // Check if speed is in the direction we're exceeding
             if (Math.signum(speed) == Math.signum(Robot.elevator.withinLimits())) {
@@ -51,7 +63,7 @@ public class ElevatorController {
                 // Warn
                 System.out.println("WARNING: Don't try to move outside the limits!");
 
-                // Make sure position control is enabled
+                // Make sure HP is running
                 sHPRunning = true;
 
                 // Exit out of this function
@@ -76,7 +88,7 @@ public class ElevatorController {
         max = roundPercentOutput(max);
 
         // Calculate output
-        double output = (speed > max) ? max : speed;
+        double output = Math.abs(max) * speed;
 
         // Set speed
         Robot.elevator.setSpeed(output);
@@ -99,7 +111,7 @@ public class ElevatorController {
             double output = (double)error * kP;
 
             // Set speed
-            Robot.elevator.setSpeed(output);
+            if (sHPEnabled) Robot.elevator.setSpeed(output);
 
         }
 

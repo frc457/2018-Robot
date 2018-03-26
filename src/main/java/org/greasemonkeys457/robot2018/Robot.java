@@ -116,6 +116,7 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        SmartDashboard.putNumber("Elevator enc", elevator.getCurrentPosition());
     }
 
     public void testPeriodic() {}
@@ -127,6 +128,8 @@ public class Robot extends IterativeRobot {
         drivetrain.reset();
         elevator.reset();
         mandible.reset();
+
+        elevator.zeroSensors();
 
     }
 
