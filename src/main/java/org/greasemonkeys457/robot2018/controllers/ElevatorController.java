@@ -64,7 +64,7 @@ public class ElevatorController {
 
         // Determine which speed we want to use
         double output = 0.0;
-        if (Math.abs(speed) > Math.abs(maxSpeed)) output = maxSpeed;
+        if (Math.abs(speed) >= Math.abs(maxSpeed)) output = maxSpeed;
         if (Math.abs(speed) < Math.abs(maxSpeed)) output = speed;
 
         // Set speed
