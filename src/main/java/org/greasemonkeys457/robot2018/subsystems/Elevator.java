@@ -25,7 +25,7 @@ public class Elevator extends Subsystem {
     private static final int ALLOWANCE = Constants.kElevatorAllowance;
 
     // Target variables
-    private int targetPosition; // in encoder ticks
+    private int targetPosition = MIN_TICKS; // in encoder ticks
 
     /**
      * Constructor. Defines and configures everything.
