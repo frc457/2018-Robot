@@ -83,6 +83,7 @@ public class ElevatorController {
         // Calculate error & output
         int error = Robot.elevator.getTargetPosition() - Robot.elevator.getCurrentPosition();
         double output = (double)error * kP;
+        output = roundPercentOutput(output);
 
         // Set speed
         if (sHPEnabled) Robot.elevator.setSpeed(output);

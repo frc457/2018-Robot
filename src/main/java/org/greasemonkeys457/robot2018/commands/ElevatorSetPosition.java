@@ -6,18 +6,27 @@ import org.greasemonkeys457.robot2018.Robot;
 
 public class ElevatorSetPosition extends Command {
 
+    private int height;
+
     public ElevatorSetPosition (int height) {
 
         // This command uses the elevator, so
         requires(Robot.elevator);
 
-        // Set the position
-        Robot.elevator.setTargetPosition(height);
+        // Remember the position
+        this.height = height;
 
     }
 
     public ElevatorSetPosition (ElevatorPosition position) {
         this(position.ticks);
+    }
+
+    public void execute () {
+
+        // Set the position
+        Robot.elevator.setTargetPosition(height);
+
     }
 
     @Override

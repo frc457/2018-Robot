@@ -24,6 +24,9 @@ public class OI {
     public Button driverStart = driverController.getButton(Start);
 
     public Button operatorA  = operatorController.getButton(A);
+    public Button operatorB  = operatorController.getButton(B);
+    public Button operatorX  = operatorController.getButton(X);
+    public Button operatorY  = operatorController.getButton(Y);
     public Button operatorLB = operatorController.getButton(LB);
     public Button operatorBack  = operatorController.getButton(Back);
     public Button operatorStart = operatorController.getButton(Start);
@@ -48,7 +51,9 @@ public class OI {
         operatorBack .whenPressed(new ElevatorAutoEnable());
         driverBack   .whenPressed(new ElevatorAutoEnable());
 
-        driverY.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SWITCH));
+        operatorX.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.MIN.ticks));
+        operatorY.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SWITCH.ticks));
+        operatorB.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SCALE.ticks));
 
     }
 

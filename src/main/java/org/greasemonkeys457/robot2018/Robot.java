@@ -27,6 +27,7 @@ public class Robot extends IterativeRobot {
     // Autonomous chooser
     private SendableChooser<StartingPosition> stposChooser;
     private SendableChooser<Goal> goalChooser;
+    private SendableChooser<Boolean> elevatorSafetyChooser;
 
     // Autonomous command
     Command autoCommand;
@@ -56,9 +57,16 @@ public class Robot extends IterativeRobot {
         goalChooser.addObject("Switch", Goal.Switch);
         goalChooser.addObject("Scale", Goal.Scale);
 
+        // Elevator safety chooser
+        elevatorSafetyChooser = new SendableChooser<>();
+        elevatorSafetyChooser.setName("Elevator");
+        elevatorSafetyChooser.addDefault("Disabled", Boolean.FALSE);
+        elevatorSafetyChooser.addObject("Enabled", Boolean.TRUE);
+
         // Put the choosers on the smart dashboard
         SmartDashboard.putData(stposChooser);
         SmartDashboard.putData(goalChooser);
+        SmartDashboard.putData("Elevator", elevatorSafetyChooser);
 
         // Camera
         Thread visionThread = new Thread(() -> {
@@ -92,6 +100,12 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
+
+        // Enable/disable elevator if neeeded
+        if (elevatorSafetyChooser.getSelected() == Boolean.TRUE)
+            Elevator.controller.enable();
+        else
+            Elevator.controller.disable();
 
         Robot.elevator.setTargetPosition(Constants.ElevatorPosition.MIN.ticks);
 
