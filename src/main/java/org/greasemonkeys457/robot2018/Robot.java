@@ -91,7 +91,11 @@ public class Robot extends IterativeRobot {
 
     }
 
-    public void teleopInit() {}
+    public void teleopInit() {
+
+        Robot.elevator.setTargetPosition(Constants.ElevatorPosition.MIN.ticks);
+
+    }
 
     public void testInit() {
 

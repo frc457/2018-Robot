@@ -12,9 +12,12 @@ public class ElevatorController {
     private boolean sHPEnabled = Constants.kElevatorControl;
 
     // Constants
-    private static final double kP = 1.0 / 64.0; // start slowing down 1 rotation before limit
+    private static final double kP = 1.0 / 32.0;
 
     public void periodic () {
+
+        // TODO: Remove test code
+        System.out.println(Robot.elevator.getTargetPosition());
 
         // Grab operator input
         double opRTrig = Robot.oi.operatorController.getRawAxis(3);
