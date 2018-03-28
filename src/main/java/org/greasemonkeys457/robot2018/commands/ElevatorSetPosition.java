@@ -27,6 +27,9 @@ public class ElevatorSetPosition extends Command {
         // Set the position
         Robot.elevator.setTargetPosition(height);
 
+        // TODO: Debug code
+        System.out.println("Set target height to " + height);
+
     }
 
     @Override

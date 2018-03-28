@@ -1,5 +1,6 @@
 package org.greasemonkeys457.robot2018.controllers;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greasemonkeys457.robot2018.Constants;
 import org.greasemonkeys457.robot2018.Robot;
 
@@ -17,7 +18,7 @@ public class ElevatorController {
     public void periodic () {
 
         // TODO: Remove test code
-        System.out.println(Robot.elevator.getTargetPosition());
+        SmartDashboard.putNumber("Elevator target", Robot.elevator.getTargetPosition());
 
         // Grab operator input
         double opRTrig = Robot.oi.operatorController.getRawAxis(3);
