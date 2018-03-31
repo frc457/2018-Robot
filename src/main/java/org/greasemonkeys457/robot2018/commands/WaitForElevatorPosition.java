@@ -29,7 +29,8 @@ public class WaitForElevatorPosition extends TimedCommand {
     public void execute () {
 
         // Debug
-        System.out.println("Waiting for elevator to reach its' target position...");
+        System.out.println("Waiting for elevator to reach its' target position..." +
+                           Robot.elevator.getTargetPosition() +  " : " + Robot.elevator.getCurrentPosition());
 
         // Periodic call (since the periodic command isn't running while this command is)
         Elevator.controller.periodic();
@@ -38,6 +39,12 @@ public class WaitForElevatorPosition extends TimedCommand {
 
     public boolean isFinished () {
         return Robot.elevator.atTargetPosition() || isTimedOut();
+    }
+
+    public void end () {
+        System.out.println("Finished waiting for elevator: " +
+                           Robot.elevator.getTargetPosition() + " : " + Robot.elevator.getCurrentPosition());
+        Robot.elevator.setSpeed(0);
     }
 
 }

@@ -71,14 +71,17 @@ public class Robot extends IterativeRobot {
         // Camera
         Thread visionThread = new Thread(() -> {
 
-            UsbCamera usbCamera = CameraServer.getInstance().startAutomaticCapture();
-            usbCamera.setResolution(640, 480);
+            UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture();
+            usbCamera1.setResolution(640, 480);
 
-        });
+            UsbCamera usbCamera2 = CameraServer.getInstance().startAutomaticCapture();
+            usbCamera2.setResolution(640,480);
+
+    });
         visionThread.setDaemon(true);
         visionThread.start();
 
-    }
+}
 
     public void disabledInit() {
         reset();
@@ -90,6 +93,9 @@ public class Robot extends IterativeRobot {
         // Grab the selected starting position and goal
         StartingPosition startingPosition = stposChooser.getSelected();
         Goal goal = goalChooser.getSelected();
+
+        // Make sure the controller is activated if we want it to be
+        if (Constants.kMoveElevatorInAuto) Elevator.controller.enable();
 
         // Use the selected st. pos. and goal to select an autonomous routine
         autoCommand = new AutonomousSelector(startingPosition, goal);
@@ -146,8 +152,6 @@ public class Robot extends IterativeRobot {
         drivetrain.reset();
         elevator.reset();
         mandible.reset();
-
-        elevator.zeroSensors();
 
     }
 

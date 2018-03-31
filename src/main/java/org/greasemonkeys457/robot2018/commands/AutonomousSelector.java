@@ -235,12 +235,12 @@ public class AutonomousSelector extends CommandGroup {
 
         if (moveElevator) {
 
-            // Step 1: Drive to the left side of the switch and lift the elevator
+            // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
-            addSequential(new FollowPath(Constants.leftToLeftSwitch));
+            addParallel(new WaitForElevatorPosition());
 
-            // Step 2: Wait for the elevator to get to the target position
-            addSequential(new WaitForElevatorPosition());
+            // Step 2: Drive to the left switch
+            addSequential(new FollowPath(Constants.leftToLeftSwitch));
 
         }
 
@@ -257,12 +257,12 @@ public class AutonomousSelector extends CommandGroup {
 
         if (moveElevator) {
 
-            // Step 1: Drive to the left side of the scale and lift the elevator
+            // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SCALE));
-            addSequential(new FollowPath(Constants.leftToLeftScale));
+            addParallel(new WaitForElevatorPosition());
 
-            // Step 2: Wait for the elevator to fet to the target position
-            addSequential(new WaitForElevatorPosition());
+            // Step 2: Drive to the left scale
+            addSequential(new FollowPath(Constants.leftToLeftScale));
 
         }
 
@@ -279,12 +279,15 @@ public class AutonomousSelector extends CommandGroup {
 
         if (moveElevator) {
 
-            // Step 1: Drive to the right side of the switch and lift the elevator
+            // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
-            addSequential(new FollowPath(Constants.centerToRightSwitch));
 
-            // Step 2: Wait for the elevator to get to the target position
-            addSequential(new WaitForElevatorPosition());
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.centerToRightSwitch));
 
         }
 
@@ -301,12 +304,15 @@ public class AutonomousSelector extends CommandGroup {
 
         if (moveElevator) {
 
-            // Step 1: Drive to the left side of the switch and lift the elevator
+            // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
-            addSequential(new FollowPath(Constants.centerToLeftSwitch));
 
-            // Step 2: Wait for the elevator to get to the target position
-            addSequential(new WaitForElevatorPosition());
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.centerToLeftSwitch));
 
         }
 
@@ -330,12 +336,12 @@ public class AutonomousSelector extends CommandGroup {
 
         if (moveElevator) {
 
-            // Step 1: Drive to the right side of the switch and lift the elevator
+            // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
-            addSequential(new FollowPath(Constants.rightToRightSwitch));
+            addParallel(new WaitForElevatorPosition());
 
-            // Step 2: Wait for the elevator to reach its' target position
-            addSequential(new WaitForElevatorPosition());
+            // Step 2: Drive to the right switch
+            addSequential(new FollowPath(Constants.rightToRightSwitch));
 
         }
 
@@ -351,12 +357,14 @@ public class AutonomousSelector extends CommandGroup {
     private void rightToRightScale () {
 
         if (moveElevator) {
-            // Step 1: Drive to the right side of the scale and lift the elevator
+
+            // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SCALE));
+            addParallel(new WaitForElevatorPosition());
+
+            // Step 2: Drive to the right scale
             addSequential(new FollowPath(Constants.rightToRightScale));
 
-            // Step 2: Wait for the elevator to reach its' target position
-            addSequential(new WaitForElevatorPosition());
         }
 
         else {
@@ -369,7 +377,9 @@ public class AutonomousSelector extends CommandGroup {
     }
 
     private void placeCube () {
-        addSequential(new MandibleOpen());
+        addSequential(new DriveSpeedForTime(0.1,0.5));
+        addParallel(new DriveSpeedForTime(0.1, 1.0));
+        addSequential(new MandibleSpeedForTime(1.0, 1.0));
     }
 
     // Helper functions

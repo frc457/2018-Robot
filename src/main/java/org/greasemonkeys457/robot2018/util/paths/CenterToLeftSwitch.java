@@ -19,8 +19,8 @@ public class CenterToLeftSwitch extends Path {
         setPoints(new Waypoint[] {
                 new Waypoint((halfBotLen),                   (14.5 - halfBotWid), 0.0),
                 new Waypoint((halfBotLen + (2.0/12.0)),      (14.5 - halfBotWid), 0.0),
-                new Waypoint((10 - (2.0/12.0) - halfBotLen), (18.0),              0.0),
-                new Waypoint((10 - halfBotLen),              (18.0),              0.0),
+                new Waypoint(((144.0/12.0) - (2.0/12.0) - halfBotLen), (18.0),              0.0),
+                new Waypoint(((144.0/12.0) - halfBotLen),              (18.0),              0.0),
         });
 
     }

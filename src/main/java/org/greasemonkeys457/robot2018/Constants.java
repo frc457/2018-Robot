@@ -11,10 +11,10 @@ public class Constants {
     public static int kEncoderPulsesPerRev = 64;
 
     // Elevator
-    public static double kElevatorScale = 0.7;
+    public static double kElevatorScale = 0.85;
     public static double kElevPitchDiameter = 1.45; // in inches
     public static int kElevatorAllowance = 5; // used to determine if the elevator is at its' target position
-    public static boolean kMoveElevatorInAuto = false;
+    public static boolean kMoveElevatorInAuto = true;
     public static boolean kElevatorControl = true;
 
     /**
@@ -29,7 +29,7 @@ public class Constants {
         SCALE(589),
         MAX(590); // highest point
 
-        public final int ticks;
+        public int ticks;
 
         ElevatorPosition(int ticks) {
             this.ticks = ticks;

@@ -13,7 +13,7 @@ public class ElevatorController {
     private boolean sHPEnabled = Constants.kElevatorControl;
 
     // Constants
-    private static final double kP = 1.0 / 32.0;
+    private static final double kP = 1.0 / 16.0;
 
     public void periodic () {
 

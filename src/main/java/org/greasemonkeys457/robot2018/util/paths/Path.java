@@ -64,7 +64,7 @@ public abstract class Path {
         }
 
         // Use the given points and config to generate a path
-        generateTrajectory();
+        generateAndSavePath();
 
         // Return the generated path
         return trajectory;
