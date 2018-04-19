@@ -6,7 +6,7 @@ import org.greasemonkeys457.robot2018.util.paths.*;
 public class Constants {
 
     // Drive
-    public static double kDriveScale = 0.7;
+    public static double kDriveScale = 0.9;
     public static double kDriveWheelDiameter = 6.0 / 12.0; // in feet
     public static int kEncoderPulsesPerRev = 64;
 
@@ -24,10 +24,10 @@ public class Constants {
     public enum ElevatorPosition {
 
         START(0), // resting on the bumpers
-        MIN(44), // just above the bumpers
-        SWITCH(209),
-        SCALE(589),
-        MAX(590); // highest point
+        MIN(24), // just above the bumpers
+        SWITCH(215),
+        SCALE(584),
+        MAX(585); // highest point
 
         public int ticks;
 
@@ -63,9 +63,11 @@ public class Constants {
     public static Path centerToRightSwitch = new CenterToRightSwitch();
     public static Path centerToLeftSwitch  = new CenterToLeftSwitch();
     public static Path leftToLeftSwitch    = new LeftToLeftSwitch();
+    public static Path leftToRightSwitch   = new LeftToRightSwitch();
     public static Path leftCrossBaseline   = new LeftCrossBaseline();
     public static Path leftToLeftScale     = new LeftToLeftScale();
     public static Path rightToRightSwitch  = new RightToRightSwitch();
+    public static Path rightToLeftSwitch   = new RightToLeftSwitch();
     public static Path rightCrossBaseline  = new RightCrossBaseline();
     public static Path rightToRightScale   = new RightToRightScale();
 

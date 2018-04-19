@@ -27,8 +27,8 @@ public class LeftToRightSwitch extends Path {
                 new Waypoint((8.0 - halfBotWid), (12.0), Math.toRadians(-90)),
 
                 // Arrive at switch plate
-                new Waypoint(((144.0 / 12.0) - (2.0/12.0) - halfBotLen), (7.0 + halfBotWid), 0.0),
-                new Waypoint(((144.0 / 12.0) - halfBotLen),              (7.0 + halfBotWid), 0.0),
+                new Waypoint((12 - (2.0/12.0) - halfBotLen), (7.0 + halfBotWid), 0.0),
+                new Waypoint((12 - halfBotLen),              (7.0 + halfBotWid), 0.0),
 
         });
 

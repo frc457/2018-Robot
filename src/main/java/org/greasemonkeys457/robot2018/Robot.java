@@ -24,10 +24,11 @@ public class Robot extends IterativeRobot {
     // OI
     public static OI oi;
 
-    // Autonomous chooser
+    // Choosers
     private SendableChooser<StartingPosition> stposChooser;
     private SendableChooser<Goal> goalChooser;
     private SendableChooser<Boolean> elevatorSafetyChooser;
+    private SendableChooser<Boolean> crossFieldAutoChooser;
 
     // Autonomous command
     Command autoCommand;
@@ -57,6 +58,12 @@ public class Robot extends IterativeRobot {
         goalChooser.addObject("Switch", Goal.Switch);
         goalChooser.addObject("Scale", Goal.Scale);
 
+        // Cross-field auto chooser (right switch from left / left switch from right)
+        crossFieldAutoChooser = new SendableChooser<>();
+        crossFieldAutoChooser.setName("Cross-field auto:");
+        crossFieldAutoChooser.addDefault("Disabled", Boolean.FALSE);
+        crossFieldAutoChooser.addObject("Enabled", Boolean.TRUE);
+
         // Elevator safety chooser
         elevatorSafetyChooser = new SendableChooser<>();
         elevatorSafetyChooser.setName("Elevator");
@@ -73,11 +80,13 @@ public class Robot extends IterativeRobot {
 
             UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture();
             usbCamera1.setResolution(640, 480);
+            usbCamera1.setFPS(7);
 
             UsbCamera usbCamera2 = CameraServer.getInstance().startAutomaticCapture();
-            usbCamera2.setResolution(640,480);
+            usbCamera2.setResolution(640, 480);
+            usbCamera2.setFPS(7);
 
-    });
+        });
         visionThread.setDaemon(true);
         visionThread.start();
 
@@ -93,12 +102,13 @@ public class Robot extends IterativeRobot {
         // Grab the selected starting position and goal
         StartingPosition startingPosition = stposChooser.getSelected();
         Goal goal = goalChooser.getSelected();
+        boolean crossFieldAuto = crossFieldAutoChooser.getSelected();
 
         // Make sure the controller is activated if we want it to be
         if (Constants.kMoveElevatorInAuto) Elevator.controller.enable();
 
         // Use the selected st. pos. and goal to select an autonomous routine
-        autoCommand = new AutonomousSelector(startingPosition, goal);
+        autoCommand = new AutonomousSelector(startingPosition, goal, crossFieldAuto);
 
         // Start the autonomous routine
         autoCommand.start();
@@ -113,7 +123,7 @@ public class Robot extends IterativeRobot {
         else
             Elevator.controller.disable();
 
-        Robot.elevator.setTargetPosition(Constants.ElevatorPosition.MIN.ticks);
+        // Robot.elevator.setTargetPosition(Constants.ElevatorPosition.MIN.ticks);
 
     }
 
@@ -123,9 +133,11 @@ public class Robot extends IterativeRobot {
         Constants.centerToRightSwitch.generatePathIfNeeded(true);
         Constants.centerToLeftSwitch.generatePathIfNeeded(true);
         Constants.leftToLeftSwitch.generatePathIfNeeded(true);
+        Constants.leftToRightSwitch.generatePathIfNeeded(true);
         Constants.leftCrossBaseline.generatePathIfNeeded(true);
         Constants.leftToLeftScale.generatePathIfNeeded(true);
         Constants.rightToRightSwitch.generatePathIfNeeded(true);
+        Constants.rightToLeftSwitch.generatePathIfNeeded(true);
         Constants.rightCrossBaseline.generatePathIfNeeded(true);
         Constants.rightToRightScale.generatePathIfNeeded(true);
 

@@ -45,9 +45,10 @@ public class AutonomousSelector extends CommandGroup {
     // Input values
     private StartingPosition startingPosition;
     private Goal goal;
+    private boolean crossField;
     private boolean moveElevator = Constants.kMoveElevatorInAuto;
 
-    public AutonomousSelector (StartingPosition startingPosition, Goal goal) {
+    public AutonomousSelector (StartingPosition startingPosition, Goal goal, boolean crossField) {
 
         // Require the subsystems this command group uses
         requires(Robot.drivetrain);
@@ -57,6 +58,7 @@ public class AutonomousSelector extends CommandGroup {
         // Remember the input values
         this.startingPosition = startingPosition;
         this.goal = goal;
+        this.crossField = crossField;
 
         // Generate the routine using the input values
         generateRoutine();
@@ -87,6 +89,17 @@ public class AutonomousSelector extends CommandGroup {
                             leftToLeftSwitch();
 
                             // Place a cube
+                            placeCube();
+
+                        }
+
+                        // Check if we own the far switch and want to try to place there
+                        else if (ownedSwitchSide() == RIGHT && crossField) {
+
+                            // Drive to the right side of the switch
+                            leftToRightSwitch();
+
+                            // Place a Cube
                             placeCube();
 
                         }
@@ -184,6 +197,17 @@ public class AutonomousSelector extends CommandGroup {
 
                         }
 
+                        // Check if we own the far switch and want to try to place there
+                        else if (ownedSwitchSide() == LEFT && crossField) {
+
+                            // Drive to the left side of the switch
+                            rightToLeftSwitch();
+
+                            // Place a Cube
+                            placeCube();
+
+                        }
+
                         // Cross the baseline if we don't
                         else {
 
@@ -226,6 +250,9 @@ public class AutonomousSelector extends CommandGroup {
 
     private void leftCrossBaseline () {
 
+        // Begin lifting the elevator
+        liftElevator();
+
         // Drive past the baseline
         addSequential(new FollowPath(Constants.leftCrossBaseline));
 
@@ -237,9 +264,12 @@ public class AutonomousSelector extends CommandGroup {
 
             // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
-            addParallel(new WaitForElevatorPosition());
 
-            // Step 2: Drive to the left switch
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
             addSequential(new FollowPath(Constants.leftToLeftSwitch));
 
         }
@@ -248,6 +278,31 @@ public class AutonomousSelector extends CommandGroup {
 
             // Drive to the left side of the switch
             addSequential(new FollowPath(Constants.leftToLeftSwitch));
+
+        }
+
+    }
+
+    private void leftToRightSwitch () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
+
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.leftToRightSwitch));
+
+        }
+
+        else {
+
+            // Drive to the left side of the switch
+            addSequential(new FollowPath(Constants.leftToRightSwitch));
 
         }
 
@@ -327,6 +382,9 @@ public class AutonomousSelector extends CommandGroup {
 
     private void rightCrossBaseline () {
 
+        // Begin lifting the elevator
+        liftElevator();
+
         // Drive past the baseline
         addSequential(new FollowPath(Constants.rightCrossBaseline));
 
@@ -338,9 +396,12 @@ public class AutonomousSelector extends CommandGroup {
 
             // Step 1: Start lifting the elevator
             addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
-            addParallel(new WaitForElevatorPosition());
 
-            // Step 2: Drive to the right switch
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
             addSequential(new FollowPath(Constants.rightToRightSwitch));
 
         }
@@ -349,6 +410,31 @@ public class AutonomousSelector extends CommandGroup {
 
             // Drive to the right side of the switch
             addSequential(new FollowPath(Constants.rightToRightSwitch));
+
+        }
+
+    }
+
+    private void rightToLeftSwitch () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
+
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.rightToLeftSwitch));
+
+        }
+
+        else {
+
+            // Drive to the left side of the switch
+            addSequential(new FollowPath(Constants.rightToLeftSwitch));
 
         }
 
@@ -374,6 +460,11 @@ public class AutonomousSelector extends CommandGroup {
 
         }
 
+    }
+
+    private void liftElevator () {
+        addSequential(new ElevatorSetPosition(ElevatorPosition.MIN));
+        addSequential(new WaitForElevatorPosition(0.5));
     }
 
     private void placeCube () {

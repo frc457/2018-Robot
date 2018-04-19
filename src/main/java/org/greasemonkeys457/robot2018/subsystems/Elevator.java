@@ -48,8 +48,8 @@ public class Elevator extends Subsystem {
     private void configureTalons () {
 
         // Invert one side
-        topMotor.setInverted(true);
-        bottomMotor.setInverted(false);
+        topMotor.setInverted(false);
+        bottomMotor.setInverted(true);
 
         // Set followers
         bottomMotor.follow(topMotor);
