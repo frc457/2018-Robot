@@ -292,13 +292,22 @@ public class Drivetrain extends Subsystem {
     }
     public void setPath (Path path) {
 
-        // Generate the path
-        Trajectory trajectory = path.getTrajectory();
+        setPath(path, false);
 
-        // Modify using the wheelbase
+    }
+
+    public void setPath (Path path, boolean justLoad) {
+
+        Trajectory trajectory;
+
+        if (justLoad) {
+            trajectory = path.loadAndGetTrajectory();
+        } else {
+            trajectory = path.getTrajectory();
+        }
+
         TankModifier modifier = new TankModifier(trajectory).modify(kWheelbase);
 
-        // Set the encoder followers
         rightEncoderFollower.setTrajectory(modifier.getRightTrajectory());
         leftEncoderFollower.setTrajectory(modifier.getLeftTrajectory());
 

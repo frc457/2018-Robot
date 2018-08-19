@@ -1,9 +1,13 @@
 package org.greasemonkeys457.robot2018.commands;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import openrio.powerup.MatchData;
 import org.greasemonkeys457.robot2018.Constants;
+import org.greasemonkeys457.robot2018.Constants.ElevatorPosition;
 import org.greasemonkeys457.robot2018.Robot;
+
+import static openrio.powerup.MatchData.OwnedSide.*;
 
 public class AutonomousSelector extends CommandGroup {
 
@@ -41,15 +45,20 @@ public class AutonomousSelector extends CommandGroup {
     // Input values
     private StartingPosition startingPosition;
     private Goal goal;
+    private boolean crossField;
+    private boolean moveElevator = Constants.kMoveElevatorInAuto;
 
-    public AutonomousSelector (StartingPosition startingPosition, Goal goal) {
+    public AutonomousSelector (StartingPosition startingPosition, Goal goal, boolean crossField) {
 
         // Require the subsystems this command group uses
         requires(Robot.drivetrain);
+        requires(Robot.elevator);
+        requires(Robot.mandible);
 
         // Remember the input values
         this.startingPosition = startingPosition;
         this.goal = goal;
+        this.crossField = crossField;
 
         // Generate the routine using the input values
         generateRoutine();
@@ -61,170 +70,407 @@ public class AutonomousSelector extends CommandGroup {
      */
     private void generateRoutine () {
 
-        // Left-side autonomous routines
-        if (this.startingPosition == StartingPosition.Left) {
-            leftRoutines();
-        }
+        switch(this.startingPosition) {
+            case Left:
+                switch(this.goal) {
+                    case Baseline:
 
-        // Center autonomous routines
-        else if (this.startingPosition == StartingPosition.Center) {
-            centerRoutines();
-        }
+                        // Cross the baseline
+                        leftCrossBaseline();
 
-        // Right-side autonomous routines
-        else if (this.startingPosition == StartingPosition.Right) {
-            rightRoutines();
+                        break;
+
+                    case Switch:
+
+                        // Check if we own the close switch
+                        if (ownedSwitchSide() == LEFT) {
+
+                            // Drive to the side of the switch
+                            leftToLeftSwitch();
+
+                            // Place a cube
+                            placeCube();
+
+                        }
+
+                        // Check if we own the far switch and want to try to place there
+                        else if (ownedSwitchSide() == RIGHT && crossField) {
+
+                            // Drive to the right side of the switch
+                            leftToRightSwitch();
+
+                            // Place a Cube
+                            placeCube();
+
+                        }
+
+                        // Cross the baseline if we don't
+                        else {
+
+                            // Cross the baseline
+                            leftCrossBaseline();
+
+                        }
+
+                        break;
+
+                    case Scale:
+
+                        // Check if we own the close scale
+                        if (ownedScaleSide() == LEFT) {
+
+                            // Drive to the left scale
+                            leftToLeftScale();
+
+                            // Place a cube
+                            placeCube();
+
+                        }
+
+                        // Cross the baseline if we don't
+                        else {
+
+                            // Cross the baseline
+                            leftCrossBaseline();
+
+                        }
+
+                        break;
+                }
+                break;
+            case Center:
+
+                switch (this.goal) {
+                    case Baseline:
+
+                        // Drive to the side of the switch we don't own
+                        if (ownedSwitchSide() == LEFT) {
+
+                            // Drive to the right side of the switch
+                            centerToRightSwitch();
+
+                        } else if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
+
+                            // Drive to the left side of the switch
+                            centerToLeftSwitch();
+
+                        }
+
+                        break;
+
+                    case Switch:
+
+                        // Drive to the side of the switch we own
+                        if (ownedSwitchSide() == LEFT) centerToLeftSwitch();
+                        if (ownedSwitchSide() == RIGHT) centerToRightSwitch();
+
+                        // Place a cube
+                        placeCube();
+
+                        break;
+
+                    // No scale from center autonomous
+
+                }
+
+                break;
+            case Right:
+
+                switch (this.goal) {
+                    case Baseline:
+
+                        // Cross the baseline
+                        rightCrossBaseline();
+
+                        break;
+
+                    case Switch:
+
+                        // Check if we own the close switch
+                        if (ownedSwitchSide() == RIGHT) {
+
+                            // Drive to the side of the switch
+                            rightToRightSwitch();
+
+                            // Place a cube
+                            placeCube();
+
+                        }
+
+                        // Check if we own the far switch and want to try to place there
+                        else if (ownedSwitchSide() == LEFT && crossField) {
+
+                            // Drive to the left side of the switch
+                            rightToLeftSwitch();
+
+                            // Place a Cube
+                            placeCube();
+
+                        }
+
+                        // Cross the baseline if we don't
+                        else {
+
+                            // Cross the baseline
+                            rightCrossBaseline();
+
+                        }
+
+                        break;
+
+                    case Scale:
+
+                        // Check if we own the close scale
+                        if (ownedScaleSide() == RIGHT) {
+
+                            // Drive to the side of the switch
+                            rightToRightScale();
+
+                            // Place a cube
+                            placeCube();
+
+                        }
+
+                        // Cross the baseline if we don't
+                        else {
+
+                            // Cross the baseline
+                            rightCrossBaseline();
+
+                        }
+
+                        break;
+
+                }
+
+                break;
         }
 
     }
 
-    /**
-     * Uses the inputted goal to generate a routine from the left starting position.
-     */
-    private void leftRoutines () {
+    private void leftCrossBaseline () {
 
-        // Left-side baseline auto
-        if (this.goal == Goal.Baseline) {
+        // Begin lifting the elevator
+        liftElevator();
 
-            // Drive past the baseline
-            addSequential(new FollowPath(Constants.leftCrossBaseline));
+        // Drive past the baseline
+        addSequential(new FollowPath(Constants.leftCrossBaseline));
 
-        }
+    }
 
-        // Left-side switch auto
-        if (this.goal == Goal.Switch) {
+    private void leftToLeftSwitch () {
 
-            if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
+        if (moveElevator) {
 
-                // Drive to the side of the left switch
-                addSequential(new FollowPath(Constants.leftToLeftSwitch));
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
 
-                // TODO: Place a cube
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
 
-            }
-
-            // TODO: Figure out what to do if we don't own the left switch
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.leftToLeftSwitch));
 
         }
 
-        if (this.goal == Goal.Scale) {
+        else {
 
-            if (ownedScaleSide() == MatchData.OwnedSide.LEFT) {
-
-                // Drive to the left scale
-                addSequential(new FollowPath(Constants.leftToLeftScale));
-
-                // TODO: Place a cube
-
-            }
-
-            // TODO: Figure out what to do if we don't own the left scale
+            // Drive to the left side of the switch
+            addSequential(new FollowPath(Constants.leftToLeftSwitch));
 
         }
 
     }
 
-    /**
-     * Uses the inputted goal to generate a routine from the center starting position.
-     */
-    private void centerRoutines () {
+    private void leftToRightSwitch () {
 
-        // Cross the baseline
-        if (this.goal == Goal.Baseline) {
+        if (moveElevator) {
 
-            /*
-             * Note that these autonomous routines drive to the side of the switch that we don't own, but never place
-             * the cube. At first glance, it might seem like we're scoring for the opposing side. However, unless the
-             * cube falls out of the robot, that should never happen.
-             *
-             * If it does happen, we'll generate new paths that don't risk that. Until then, this will work fine.
-             */
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
 
-            if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
 
-                // Drive to the right side of the switch
-                addSequential(new FollowPath(Constants.centerToRightSwitch));
-
-            }
-
-            if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
-
-                // Drive to the left side of the switch
-                addSequential(new FollowPath(Constants.centerToLeftSwitch));
-
-            }
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.leftToRightSwitch));
 
         }
 
-        // Place a cube in the switch
-        if (this.goal == Goal.Switch) {
+        else {
 
-            if (ownedSwitchSide() == MatchData.OwnedSide.LEFT) {
-
-                // Drive to the left side of the switch
-                addSequential(new FollowPath(Constants.centerToLeftSwitch));
-
-                // TODO: Place cube
-
-            } else if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT){
-
-                // Drive to the right side of the switch
-                addSequential(new FollowPath(Constants.centerToRightSwitch));
-
-                // TODO: Place cube
-
-            }
+            // Drive to the left side of the switch
+            addSequential(new FollowPath(Constants.leftToRightSwitch));
 
         }
-
-        // No scale autonomous from the center position (for now)
 
     }
 
-    /**
-     * Uses the inputted goal to generate a routine from the right starting position.
-     */
-    private void rightRoutines () {
+    private void leftToLeftScale () {
 
-        // Right-side baseline auto
-        if (this.goal == Goal.Baseline) {
+        if (moveElevator) {
 
-            // Drive past the baseline
-            addSequential(new FollowPath(Constants.rightCrossBaseline));
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SCALE));
+            addParallel(new WaitForElevatorPosition());
 
-        }
-
-        // Right-side switch auto
-        if (this.goal == Goal.Switch) {
-
-            if (ownedSwitchSide() == MatchData.OwnedSide.RIGHT) {
-
-                // Drive to the side of the right switch
-                addSequential(new FollowPath(Constants.rightToRightSwitch));
-
-                // TODO: Place a cube
-
-            }
-
-            // TODO: Figure out what to do if we don't own the right switch
+            // Step 2: Drive to the left scale
+            addSequential(new FollowPath(Constants.leftToLeftScale));
 
         }
 
-        if (this.goal == Goal.Scale) {
+        else {
 
-            if (ownedScaleSide() == MatchData.OwnedSide.RIGHT) {
-
-                // Drive to the corner of the right scale
-                addSequential(new FollowPath(Constants.rightToRightScale));
-
-                // TODO: Place a cube
-
-            }
-
-            // TODO: Figure out what to do if we don't own the right scale
+            // Drive to the left side of the scale
+            addSequential(new FollowPath(Constants.leftToLeftScale));
 
         }
 
+    }
+
+    private void centerToRightSwitch () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
+
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.centerToRightSwitch));
+
+        }
+
+        else {
+
+            // Drive to the right side of the switch
+            addSequential(new FollowPath(Constants.centerToRightSwitch));
+
+        }
+
+    }
+
+    private void centerToLeftSwitch () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
+
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.centerToLeftSwitch));
+
+        }
+
+        else {
+
+            // Drive to the left side of the switch
+            addSequential(new FollowPath(Constants.centerToLeftSwitch));
+
+        }
+
+    }
+
+    private void rightCrossBaseline () {
+
+        // Begin lifting the elevator
+        liftElevator();
+
+        // Drive past the baseline
+        addSequential(new FollowPath(Constants.rightCrossBaseline));
+
+    }
+
+    private void rightToRightSwitch () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
+
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.rightToRightSwitch));
+
+        }
+
+        else {
+
+            // Drive to the right side of the switch
+            addSequential(new FollowPath(Constants.rightToRightSwitch));
+
+        }
+
+    }
+
+    private void rightToLeftSwitch () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SWITCH));
+
+            // Lift the elevator a tiny bit before starting to drive
+            addSequential(new WaitForElevatorPosition(0.5));
+
+            // Drive while lifting
+            addParallel(new WaitForElevatorPosition());
+            addSequential(new FollowPath(Constants.rightToLeftSwitch));
+
+        }
+
+        else {
+
+            // Drive to the left side of the switch
+            addSequential(new FollowPath(Constants.rightToLeftSwitch));
+
+        }
+
+    }
+
+    private void rightToRightScale () {
+
+        if (moveElevator) {
+
+            // Step 1: Start lifting the elevator
+            addSequential(new ElevatorSetPosition(ElevatorPosition.SCALE));
+            addParallel(new WaitForElevatorPosition());
+
+            // Step 2: Drive to the right scale
+            addSequential(new FollowPath(Constants.rightToRightScale));
+
+        }
+
+        else {
+
+            // Drive to the right side of the scale
+            addSequential(new FollowPath(Constants.rightToRightScale));
+
+        }
+
+    }
+
+    private void liftElevator () {
+        addSequential(new ElevatorSetPosition(ElevatorPosition.MIN));
+        addSequential(new WaitForElevatorPosition(0.5));
+    }
+
+    private void placeCube () {
+        addSequential(new DriveSpeedForTime(0.1,0.5));
+        addParallel(new DriveSpeedForTime(0.1, 1.0));
+        addSequential(new MandibleSpeedForTime(1.0, 1.0));
     }
 
     // Helper functions

@@ -1,27 +1,38 @@
 package org.greasemonkeys457.robot2018;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.greasemonkeys457.robot2018.commands.*;
+import org.greasemonkeys457.robot2018.util.oxilib.LogitechController;
 import org.greasemonkeys457.robot2018.util.oxilib.POVButton;
+
+import static org.greasemonkeys457.robot2018.util.oxilib.LogitechController.ButtonKey.*;
+import static org.greasemonkeys457.robot2018.util.oxilib.LogitechController.POVButtonKey.*;
 
 public class OI {
 
     // Controllers
-    public Joystick driverController = new Joystick(0);
-    public Joystick operatorController = new Joystick(1);
+    public LogitechController driverController = new LogitechController(0);
+    public LogitechController operatorController = new LogitechController(1);
 
     // Buttons
-    public Button driverA  = new JoystickButton(driverController, 1);
-    public Button driverLB = new JoystickButton(driverController, 5);
-    public Button driverRB = new JoystickButton(driverController, 6);
+    public Button driverA  = driverController.getButton(A);
+    public Button driverY  = driverController.getButton(Y);
+    public Button driverLB = driverController.getButton(LB);
+    public Button driverRB = driverController.getButton(RB);
+    public Button driverBack  = driverController.getButton(Back);
+    public Button driverStart = driverController.getButton(Start);
 
-    public Button operatorA  = new JoystickButton(operatorController, 1);
-    public Button operatorLB = new JoystickButton(operatorController, 6);
+    public Button operatorA  = operatorController.getButton(A);
+    public Button operatorB  = operatorController.getButton(B);
+    public Button operatorX  = operatorController.getButton(X);
+    public Button operatorY  = operatorController.getButton(Y);
+    public Button operatorLB = operatorController.getButton(LB);
+    public Button operatorBack  = operatorController.getButton(Back);
+    public Button operatorStart = operatorController.getButton(Start);
 
-    public Button operatorUp = new POVButton(operatorController, POVButton.Direction.UP);
-    public Button operatorDown = new POVButton(operatorController, POVButton.Direction.DOWN);
+    public Button operatorUp   = operatorController.getPOVButton(UP);
+    public Button operatorDown = operatorController.getPOVButton(DOWN);
 
     public OI () {
 
@@ -33,13 +44,16 @@ public class OI {
         // Mandible control
         operatorLB.whenPressed(new MandibleToggleGrip());
 
-        /*
-        operatorUp.whenPressed(new MandibleSetSpeed(.75));
-        operatorUp.whenReleased(new MandibleSetSpeed(0.0));
+        // Elevator control testing
+        operatorStart.whenPressed(new ElevatorAutoDisable());
+        driverStart  .whenPressed(new ElevatorAutoDisable());
 
-        operatorDown.whenPressed(new MandibleSetSpeed(-.75));
-        operatorDown.whenReleased(new MandibleSetSpeed(0.0));
-        */
+        operatorBack .whenPressed(new ElevatorAutoEnable());
+        driverBack   .whenPressed(new ElevatorAutoEnable());
+
+        operatorX.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.MIN.ticks));
+        operatorY.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SWITCH.ticks));
+        operatorB.whenPressed(new ElevatorSetPosition(Constants.ElevatorPosition.SCALE.ticks));
 
     }
 
