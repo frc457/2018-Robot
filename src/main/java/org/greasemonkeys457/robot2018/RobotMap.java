@@ -2,22 +2,48 @@ package org.greasemonkeys457.robot2018;
 
 public class RobotMap {
 
-    // Drivetrain Talon SRX IDs
-    public static int rfMotor = 1;
-    public static int rbMotor = 2;
-    public static int lfMotor = 4;
-    public static int lbMotor = 3;
+    /*
+     * Talons
+     */
 
-    // Drivetrain shifter PCM ports
-    public static int shifterForward = 1;
-    public static int shifterReverse = 0;
+    // Drivetrain
+    public static int lfMotor = 3;
+    public static int lbMotor = 2;
+    public static int rfMotor = 0;
+    public static int rbMotor = 1;
 
-    // Drivetrain encoders
-    public static int rightEncoderA = 0;
-    public static int rightEncoderB = 1;
-    public static int leftEncoderA  = 2;
-    public static int leftEncoderB  = 3;
+    // Elevator
+    public static int elevatorBottomMotor = 7;
+    public static int elevatorTopMotor = 6;
 
-    // TODO: NavX?
+    // Mandible
+    public static int mandRightMotor = 4;
+    public static int mandLeftMotor = 5;
+
+    /*
+     * Pneumatics (PCM ports)
+     */
+
+    // Drivetrain
+    public static int shifterForward = 3;
+    public static int shifterReverse = 2;
+
+    // Mandible
+    public static int mandGripperForward = 1;
+    public static int mandGripperReverse = 0;
+
+    /*
+     * Encoders
+     */
+
+    // Drivetrain
+    public static int rightEncoderA = 4;
+    public static int rightEncoderB = 5;
+    public static int leftEncoderA  = 3;
+    public static int leftEncoderB  = 2;
+
+    // Elevator
+    public static int elevatorEncoderA = 0;
+    public static int elevatorEncoderB = 1;
 
 }

@@ -39,6 +39,9 @@ public class FollowPath extends Command {
         // Tell the drivetrain to follow the path previously generated
         Robot.drivetrain.followPath();
 
+        // TODO: Debug code
+        System.out.println("Following path!");
+
     }
 
     public boolean isFinished () {
